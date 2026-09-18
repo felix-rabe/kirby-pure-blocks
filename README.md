@@ -4,7 +4,7 @@
 
 ### About
 
-`Kirby Pure Blocks` extends Kirby Pure with reusable blocks, page-building infrastructure, navigation, and shared media renderers.
+`Kirby Pure Blocks` extends `Kirby Pure` with reusable blocks, page-building infrastructure, navigation, and shared media renderers.
 
 Universal Renders:
 - Pure Image
@@ -26,10 +26,10 @@ Additional Blocks:
 ## Requirements
 
 - Kirby 5
-- Kirby Pure
-- Tobimori ThumbHash
+- [Kirby Pure](https://github.com/felix-rabe/kirby-pure)
+- [Tobimori ThumbHash](https://github.com/tobimori/kirby-thumbhash)
 
-> This plugin is intended to work with `Kirby Pure`. Please check out the Repository here before you continue. 
+> This plugin is intended to work with `Kirby Pure`. Please check out the Repository [here](https://github.com/felix-rabe/kirby-pure) before you continue. 
 
 > `Kirby Pure Blocks` uses `Tobimori ThumbHash` to generate lightweight placeholders for images and video posters. It currently assumes that ThumbHash is available and therefore requires the plugin.
 
@@ -340,11 +340,7 @@ Vendor assets are loaded before the corresponding Pure scripts and styles that d
 
 ### Tobimori ThumbHash
 
-Kirby Pure Blocks requires the Tobimori ThumbHash plugin.
-
-ThumbHash is used by the reusable image and video rendering infrastructure to generate lightweight placeholders while media is loading.
-
-The image renderer directly uses ThumbHash for image placeholders. Video posters can use the same placeholder infrastructure.
+Kirby Pure Blocks requires the Tobimori ThumbHash plugin. ThumbHash is used by the reusable image and video rendering infrastructure to generate lightweight placeholders while media is loading. The image renderer directly uses ThumbHash for image placeholders. Video posters can use the same placeholder infrastructure.
 
 ### Recommended ThumbHash settings
 
