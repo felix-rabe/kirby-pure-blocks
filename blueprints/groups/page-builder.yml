@@ -1,0 +1,395 @@
+type: group
+fields:
+  blocksheadline:
+    type: headline
+    label: Block Builder
+
+  maxBlocksWidthToggle:
+    label: Max Blocks Width
+    width: 1/3
+    type: toggle
+    text:
+      - "No"
+      - "Yes"
+    help: Will **limit the width** of the Blocks and **centers** it. 
+
+  maxBlocksWidthValue:
+    label: Value
+    type: number
+    after: px
+    width: 1/3
+    when:
+      maxBlocksWidthToggle: true
+    help: Number, e.g. **1440** or **1920**.
+
+  maxBlocksWidthAlignment:
+    label: Alignment
+    type: toggles
+    width: 1/3
+    options:
+      - value: left
+        text: Left
+        icon: text-left
+      - value: center
+        text: Center
+        icon: text-center
+      - value: right
+        text: Right
+        icon: text-right
+    when:
+      maxBlocksWidthToggle: true
+    default: center
+    help: How the limited-width blocks should be aligned.
+
+  blocksPaddingLeftRight:
+    width: 1/3
+    label: Space Sides
+    type: select
+    empty: false
+    default: "none"
+    labels: false
+    required: true
+    options:
+      - value: none
+        text: None
+      - value: s
+        text: S
+      - value: m
+        text: M
+      - value: l
+        text: L
+      - value: xl
+        text: XL
+      - value: xxl
+        text: XXL
+      - value: 3xl
+        text: 3XL
+      - value: 4xl
+        text: 4XL
+
+  blocksPaddingTop:
+    width: 1/3
+    label: Space Top
+    type: select
+    empty: false
+    default: "none"
+    labels: false
+    required: true
+    options:
+      - value: none
+        text: None
+      - value: s
+        text: S
+      - value: m
+        text: M
+      - value: l
+        text: L
+      - value: xl
+        text: XL
+      - value: xxl
+        text: XXL
+      - value: 3xl
+        text: 3XL
+      - value: 4xl
+        text: 4XL
+
+  blocks:
+    type: blocks
+
+  layoutHeadline:
+    type: headline
+    label: Layout Builder
+
+  maxLayoutWidthToggle:
+    label: Max Layout Width
+    width: 1/3
+    type: toggle
+    text:
+      - "No"
+      - "Yes"
+    help: Will **limit the width** of the layout and **centers** it. 
+
+  maxLayoutWidthValue:
+    label: Value
+    type: number
+    after: px
+    width: 1/3
+    when:
+      maxLayoutWidthToggle: true
+    help: Number, e.g. **1440** or **1920**.
+
+  maxLayoutWidthAlignment:
+    label: Alignment
+    type: toggles
+    width: 1/3
+    options:
+      - value: left
+        text: Left
+        icon: text-left
+      - value: center
+        text: Center
+        icon: text-center
+      - value: right
+        text: Right
+        icon: text-right
+    when:
+      maxLayoutWidthToggle: true
+    default: center
+    help: How the limited-width layout should be aligned.
+
+  layout:
+    type: layout
+    layouts:
+      - "12/12"
+      - "6/12, 6/12"
+      - "4/12, 4/12, 4/12"
+      - "3/12, 3/12, 3/12, 3/12"
+      - "2/12, 2/12, 2/12, 2/12, 2/12, 2/12"
+
+    settings:
+      fields:
+
+        innerSpaces:
+          label: Inner Spaces
+          type: headline
+
+        paddingTop:
+          width: 1/3
+          label: Space Top
+          type: select
+          empty: false
+          default: "none"
+          labels: false
+          required: true
+          options:
+            - value: none
+              text: None
+            - value: s
+              text: S
+            - value: m
+              text: M
+            - value: l
+              text: L
+            - value: xl
+              text: XL
+            - value: xxl
+              text: XXL
+            - value: 3xl
+              text: 3XL
+            - value: 4xl
+              text: 4XL
+          help: Controls the **space above** this layout section.
+
+        paddingBottom:
+          width: 1/3
+          label: Space Bottom
+          type: select
+          empty: false
+          default: "none"
+          labels: false
+          required: true
+          options:
+            - value: none
+              text: None
+            - value: s
+              text: S
+            - value: m
+              text: M
+            - value: l
+              text: L
+            - value: xl
+              text: XL
+            - value: xxl
+              text: XXL
+            - value: 3xl
+              text: 3XL
+            - value: 4xl
+              text: 4XL
+          help: Controls the **space below** this layout section.
+
+        paddingLeftRight:
+          width: 1/3
+          label: Space Inner Sides
+          type: select
+          empty: false
+          default: "none"
+          labels: false
+          required: true
+          options:
+            - value: none
+              text: None
+            - value: s
+              text: S
+            - value: m
+              text: M
+            - value: l
+              text: L
+            - value: xl
+              text: XL
+            - value: xxl
+              text: XXL
+            - value: 3xl
+              text: 3XL
+            - value: 4xl
+              text: 4XL
+          help: Controls the **space left and right inside** this layout section.
+
+        alignItems:
+          width: 1/3
+          label: Align Items
+          type: select
+          empty: false
+          default: "start"
+          labels: false
+          required: true
+          options:
+            - value: start
+              text: Start
+            - value: center
+              text: Center
+            - value: end
+              text: End
+            - value: stretch
+              text: Stretch
+          help: Controls the **vertical alignment** of blocks in this layout.
+
+        columnGap:
+          label: Column Gap
+          extends: fields/gap
+          help: Sets the **horizontal space** between columns in this layout.
+
+        rowGap:
+          label: Row Gap
+          extends: fields/gap
+          help: Sets the **vertical space** between blocks in this layout.
+
+        outerSpaces:
+          label: Outer Spaces
+          type: headline
+
+        marginTop:
+          width: 1/3
+          label: Space Before
+          type: select
+          empty: false
+          default: "none"
+          labels: false
+          required: true
+          options:
+            - value: none
+              text: None
+            - value: s
+              text: S
+            - value: m
+              text: M
+            - value: l
+              text: L
+            - value: xl
+              text: XL
+            - value: xxl
+              text: XXL
+            - value: 3xl
+              text: 3XL
+            - value: 4xl
+              text: 4XL
+          help: Controls the **space above** this layout section.
+
+        marginBottom:
+          extends: fields/space-after
+          help: Controls the **space below** this layout section.
+
+        marginLeftRight:
+          width: 1/3
+          label: Space Outer Sides
+          type: select
+          empty: false
+          default: "none"
+          labels: false
+          required: true
+          options:
+            - value: none
+              text: None
+            - value: s
+              text: S
+            - value: m
+              text: M
+            - value: l
+              text: L
+            - value: xl
+              text: XL
+            - value: xxl
+              text: XXL
+            - value: 3xl
+              text: 3XL
+            - value: 4xl
+              text: 4XL
+          help: Controls the space **left and right outside** of this layout section.
+
+        maxLayoutSectionWidthToggle:
+          label: Max Layout Section Width
+          width: 1/3
+          type: toggle
+          text:
+            - "No"
+            - "Yes"
+          help: Will **limit the width** of the layout and **centers** it. 
+
+        maxLayoutSectionWidthValue:
+          label: Value
+          type: number
+          after: px
+          width: 1/3
+          when:
+            maxLayoutSectionWidthToggle: true
+          help: Number, e.g. **1440** or **1920**.
+
+        maxLayoutSectionWidthAlignment:
+          label: Alignment
+          type: select
+          width: 1/3
+          required: true
+          options:
+            - value: left
+              text: Left
+              icon: text-left
+            - value: center
+              text: Center
+              icon: text-center
+            - value: right
+              text: Right
+              icon: text-right
+          when:
+            maxLayoutSectionWidthToggle: true
+          default: center
+          help: How the limited-width layout section should be aligned.
+
+        layoutSectionFullBleed:
+          label: Full Bleed Layout Section
+          width: 1/3
+          type: toggle
+          text:
+            - "No"
+            - "Yes"
+          help: Makes this layout section span the full available width and ignores the max layout section width.
+
+        backgroundColorOptions:
+          label: Background Color
+          type: headline
+
+        backgroundColor:
+          label: Background Color
+          type: color
+          placeholder: '#ffffff'
+          alpha: true
+          default: false
+          width: 1/3
+          help: Overwrites the default background color.
+
+        backgroundColorFullBleed:
+          width: 1/3
+          label: Full Bleed Background Color
+          type: toggle
+          text:
+            - "No"
+            - "Yes"
+          help: Will make the background color **span the entire layout width** when a max-width is set.

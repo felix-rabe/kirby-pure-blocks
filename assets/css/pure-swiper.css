@@ -1,0 +1,58 @@
+/* ----------------------------------------
+   Swiper
+---------------------------------------- */
+
+.pure-swiper {
+    display: grid;
+    grid-template-columns: 1fr;
+}
+
+.pure-swiper-caption {
+    margin-top: var(--size-xs);
+    color: var(--color-fourth);
+}
+
+.swiper {
+    width: 100%;
+    max-width: 100%;
+    min-height: 0;
+    min-width: 0;
+}
+
+.overflow-x-hidden {
+    overflow-x: hidden;
+}
+
+
+.fill-window {
+    width: 100vw;
+    height: 100svh;
+    min-height: 0;
+}
+
+
+/* Pagination outside Swiper */
+
+.swiper-pagination[class*="-outside"] {
+    position: static !important;
+    bottom: auto !important;
+    left: auto !important;
+    transform: none !important;
+    width: auto !important;
+    text-align: center;
+}
+
+
+/* Safari fix for video rendering inside Swiper */
+
+.swiper-slide video {
+    backface-visibility: hidden;
+    will-change: transform, opacity;
+}
+
+
+/* Firefox fix for video dragging inside Swiper */
+
+.swiper-slide video {
+    pointer-events: none;
+}

@@ -1,0 +1,9 @@
+label: Corners
+type: select
+default: square
+required: true
+options:
+  square: Square
+  rounded: Rounded
+  circle: Circle
+width: 1/3

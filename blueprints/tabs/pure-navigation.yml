@@ -1,0 +1,21 @@
+label: Navigation
+icon: menu
+
+sections:
+  navigation:
+    type: fields
+
+    fields:
+      headerNavigation:
+        type: blocks
+        label: Header Navigation
+        max: 1
+        fieldsets:
+          - pure-site-header-navigation
+
+      footerNavigation:
+        type: blocks
+        label: Footer Navigation
+        max: 1
+        fieldsets:
+          - pure-site-footer-navigation

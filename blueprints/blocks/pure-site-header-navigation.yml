@@ -1,0 +1,58 @@
+name: Pure Site Header Navigation
+icon: menu
+preview: pure-navigation
+
+fields:
+  showSiteTitle:
+    type: toggle
+    label: Site title
+    default: true
+    text:
+      - Hide
+      - Show
+    width: 1/2
+
+  showListedPages:
+    type: toggle
+    label: Listed pages
+    default: true
+    text:
+      - Hide
+      - Show
+    width: 1/2
+
+  mobileMenu:
+    type: toggle
+    label: Mobile menu
+    default: true
+    text:
+      - Disable
+      - Enable
+    width: 1/2
+
+  sticky:
+    type: toggle
+    label: Sticky navigation
+    default: false
+    text:
+      - Disable
+      - Enable
+    width: 1/2
+
+  hideOnScroll:
+    type: toggle
+    label: Hide on scroll
+    default: false
+    text:
+      - Disable
+      - Enable
+    width: 1/2
+    when:
+      sticky: true
+      
+  customLinks:
+    label: Custom menu items
+    extends: fields/links
+
+  anchor:
+    extends: fields/anchor

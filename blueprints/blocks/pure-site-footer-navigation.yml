@@ -1,0 +1,11 @@
+name: Pure Site Footer Navigation
+icon: menu
+preview: pure-footer
+
+fields:
+  items:
+    label: Items
+    extends: fields/links
+
+  anchor:
+    extends: fields/anchor

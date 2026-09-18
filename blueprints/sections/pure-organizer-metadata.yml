@@ -1,0 +1,38 @@
+type: fields
+
+fields:
+
+  organizerMetadataHeadline:
+    type: headline
+    label: Organizer Metadata
+
+  thumbnail:
+    width: 1/1
+    label: Thumbnail
+    type: blocks
+    fieldsets:
+      - pure-image
+      - pure-video
+      - pure-swiper
+      - pure-flexible-text
+      - pure-spacer
+      
+  thumbnailWidth:
+    width: 1/1
+    label: Thumbnail Width
+    type: range
+    min: 1
+    max: 12
+    step: 1
+    default: 6
+    help: 12 is Full Width, 6 is Half, 4 is One Third, etc.
+
+  date:
+    width: 1/2
+    label: Date
+    type: date
+
+  tags:
+    width: 1/2
+    label: Tags
+    type: tags

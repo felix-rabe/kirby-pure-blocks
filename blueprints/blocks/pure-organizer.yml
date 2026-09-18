@@ -1,0 +1,101 @@
+title: Organizer
+icon: grid
+preview: pure-organizer
+wysiwyg: true
+
+tabs:
+
+  settings:
+    label: Settings
+    fields:
+
+      sourcePage:
+        width: 1/3
+        label: Source Page, or all subpages if left empty
+        type: pages
+        max: 1
+      displayMode:
+        label: Display Mode
+        type: select
+        width: 1/3
+        default: grid
+        required: true
+        empty: false
+        options:
+          grid: Grid
+          masonry: Masonry
+
+      gap:
+        label: Gap
+        extends: fields/gap
+
+      limitItems:
+        label: Number of entries to show
+        type: number
+        step: 1
+        width: 1/3
+        placeholder: e.g. 3, leave empty to show all
+
+      orderToggle:
+        label: Order
+        type: toggle
+        width: 1/3
+        default: false
+        text: "Reverse subpages order"
+
+      filterByTags:
+        label: Filter by Tags
+        type: tags
+        width: 1/3
+
+      tagFilter:
+        label: Tag Filter
+        type: toggle
+        text: "On"
+        default: false
+        width: 1/3
+
+      dateFilter:
+        label: Date Filter
+        type: toggle
+        text: "On"
+        default: false
+        width: 1/3
+
+      filterMulti:
+        label: Filter Multi-select
+        type: toggle
+        text: "On"
+        default: false
+        width: 1/3
+
+      filterSticky:
+        label: Filter Sticky
+        type: toggle
+        text: "On"
+        default: false
+        width: 1/3
+
+      itemScaler:
+        label: Item Scaler
+        type: toggle
+        text: "On"
+        default: false
+        width: 1/3
+
+      showTags:
+        label: Show Tags
+        type: toggle
+        text: "On"
+        default: false
+        width: 1/3
+
+      showPageTitle:
+        label: Show Page Title
+        type: toggle
+        text: "On"
+        default: false
+        width: 1/3
+
+      anchor:
+        extends: fields/anchor

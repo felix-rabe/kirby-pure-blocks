@@ -1,0 +1,26 @@
+{
+  "name": "felix-rabe/kirby-pure-blocks",
+  "description": "Blocks and page-building tools for Kirby Pure.",
+  "type": "kirby-plugin",
+  "license": "MIT",
+  "homepage": "https://github.com/felix-rabe/kirby-pure-blocks",
+  "keywords": [
+    "kirby",
+    "kirby-plugin",
+    "panel",
+    "blocks"
+  ],
+  "authors": [
+    {
+      "name": "Felix Rabe",
+      "homepage": "https://www.felixrabe.de"
+    }
+  ],
+  "require": {
+    "getkirby/cms": "^5.0",
+    "getkirby/composer-installer": "^1.2"
+  },
+  "extra": {
+    "installer-name": "kirby-pure-blocks"
+  }
+}

@@ -1,0 +1,58 @@
+name: Flexible Text
+icon: text
+preview: pure-flexible-text
+
+fields:
+  text:
+    label: Text
+    type: writer
+    inline: true
+    marks:
+      - link
+      - underline
+    toolbar:
+      inline: false
+      marks:
+        - link
+        - underline
+
+  fontFamily:
+    label: Font Family
+    type: text
+    placeholder: TeX Gyre Heros
+    width: 1/4
+
+  fontSize:
+    label: Font Size
+    type: select
+    default: s
+    empty: false
+    width: 1/4
+    options:
+      xxs: XXS
+      xs: XS
+      s: S
+      sm: SM
+      m: M
+      ml: ML
+      l: L
+      xl: XL
+      xxl: XXL
+      3xl: 3XL
+      4xl: 4XL
+
+  lineHeight:
+    label: Line Height
+    type: text
+    placeholder: "1.2"
+    width: 1/4
+
+  letterSpacing:
+    label: Letter Spacing
+    type: text
+    placeholder: ".5em"
+    width: 1/4
+
+  textAlign:
+    extends: fields/text-align
+    width: 1/4

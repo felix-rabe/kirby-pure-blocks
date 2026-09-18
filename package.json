@@ -1,0 +1,9 @@
+{
+  "name": "kirbypure/kirby-pure-blocks",
+  "private": true,
+  "scripts": {
+    "dev": "npx kirbyup src/index.js --watch",
+    "serve": "npx kirbyup src/index.js --watch --serve",
+    "build": "npx kirbyup src/index.js"
+  }
+}

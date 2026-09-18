@@ -1,0 +1,204 @@
+name: Pure Swiper
+icon: images
+preview: pure-swiper
+
+fields:
+
+  # images:
+  #   label: field.blocks.gallery.images.label
+  #   type: files
+  #   multiple: true
+  #   layout: cards
+  #   size: small
+  #   empty: field.blocks.gallery.images.empty
+  #   uploads: false
+  #   image:
+  #     ratio: 1/1
+
+  images:
+    label: Media
+    type: files
+    multiple: true
+    layout: cards
+    size: small
+    empty: Select images or videos
+    uploads: false
+    accept:
+      type:
+        - image
+        - video
+    image:
+      ratio: 1/1
+
+  effect:
+    label: Effect
+    type: select
+    default: slide
+    options:
+      slide: Slide
+      fade: Fade
+      coverflow: Coverflow
+      cube: Cube
+      flip: Flip
+      cards: Cards
+      creative: Creative
+    width: 1/3
+    required: true
+    help: "**Cards** will hide overflow-x of main container"
+
+  speed:
+    label: Transition Speed (ms)
+    type: number
+    default: 1000
+    min: 0
+    width: 1/3
+
+  loop:
+    label: Loop Slides
+    type: toggle
+    default: false
+    width: 1/3
+    help: 'Works with **Slide**, **Fade**, **Coverflow**, **Cube**, **Flip** and **Creative**'
+
+  rewind:
+    label: Rewind
+    type: toggle
+    default: false
+    width: 1/3
+    when:
+      loop: false
+    help: 'Works best with navigation arrows enabled'
+
+  autoplay:
+    label: Autoplay
+    type: toggle
+    default: false
+    width: 1/3
+
+  autoplayDelay:
+    label: Autoplay Delay (ms)
+    type: number
+    default: 3000
+    width: 1/3
+    when:
+      autoplay: true
+
+  autoplayDisableOnInteraction:
+    label: Disable Autoplay on Interaction
+    type: toggle
+    default: true
+    width: 1/3
+    when:
+      autoplay: true
+
+  autoplayPauseOnMouseEnter:
+    label: Pause Autoplay on Mouse Enter
+    type: toggle
+    default: false
+    width: 1/3
+    when:
+      autoplay: true
+
+  aspectRatio:
+    label: Aspect Ratio
+    type: select
+    options:
+      auto: Auto (Dynamic Height)
+      fullscreen: Fullscreen (Dynamic Width and Height)
+      1/1: 1:1 (Square)
+      4/3: 4:3 (Standard)
+      3/2: 3:2 (Classic Camera)
+      16/9: 16:9 (Widescreen)
+      21/9: 21:9 (Cinematic)
+    default: auto
+    required: true
+    width: 1/3
+
+  imageFit:
+    label: Image Fit
+    type: select
+    options:
+      cover: Cover (Crop to fill)
+      contain: Contain (Show full image, may add empty space)
+    default: cover
+    required: true
+    width: 1/3
+
+  spaceBetween:
+    label: Space Between Slides (px)
+    type: number
+    default: 0
+    width: 1/3
+    help: 'Works with **Slide** and **Coverflow**'
+
+  slidesPerView:
+    label: Slides Per View
+    type: number
+    default: 1
+    min: 1
+    width: 1/3
+    help: 'Works with **Slide** and **Coverflow**'
+
+  navSettings:
+    label: Navigation
+    type: headline
+
+  navigation:
+    label: Show Navigation Arrows
+    type: toggle
+    default: true
+    width: 1/3
+
+  pagination:
+    label: Show Pagination (Dots)
+    type: toggle
+    default: true
+    width: 1/3
+
+  paginationPlacement:
+    label: Pagination Placement
+    type: select
+    default: inside
+    required: true
+    options:
+      inside: Inside Slides
+      outside: Outside Slides
+    width: 1/3
+    when:
+      pagination: true
+
+  scrollbar:
+    label: Show Scrollbar
+    type: toggle
+    default: false
+    width: 1/3
+
+  draggable:
+    label: Draggable
+    type: toggle
+    default: true
+    help: Enables dragging with mouse and swiping by touch.
+    width: 1/3
+
+  enableMousewheel:
+    label: Enable Mousewheel Control
+    type: toggle
+    default: true
+    width: 1/3
+
+  captionHeadline:
+    label: Caption
+    type: headline
+
+  caption:
+    label: Text
+    type: writer
+    icon: text
+    inline: true
+
+  captionTextAlign:
+    label: Caption Alignment
+    extends: fields/text-align
+
+  anchor:
+    extends: fields/anchor

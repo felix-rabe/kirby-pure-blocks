@@ -1,0 +1,107 @@
+/* ----------------------------------------
+   Captions
+---------------------------------------- */
+
+figcaption {
+    color: var(--color-fourth);
+}
+
+
+/* ----------------------------------------
+   Image & Video
+---------------------------------------- */
+
+figure.pure-image,
+figure.pure-video {
+    position: relative;
+    align-self: start;
+    width: 100%;
+}
+
+figure.pure-image figcaption,
+figure.pure-video figcaption {
+    margin-top: var(--size-xs);
+}
+
+.pure-image img,
+.pure-video video {
+    height: 100%;
+}
+
+.pure-video-wrapper {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+}
+
+.pure-video-embed {
+    border: 0;
+    display: block;
+}
+
+
+/* Raster images */
+
+.pure-image img.is-raster-image {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+}
+
+
+/* SVG images */
+
+.pure-image img:not(.is-raster-image) {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    object-fit: contain;
+    margin: 0 auto;
+}
+
+
+/* Image border */
+
+figure.pure-image.has-border {
+    border: 1px solid var(--image-border-color, currentColor);
+}
+
+
+/* ----------------------------------------
+   Full Bleed
+---------------------------------------- */
+
+.block-full-bleed {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}
+
+
+/* ----------------------------------------
+   Parent Page Link
+---------------------------------------- */
+
+.parent-page-link {
+    width: max-content;
+}
+
+
+/* ----------------------------------------
+   Pseudo Thumbhash
+---------------------------------------- */
+
+.pseudo-thumbhash {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+/* ----------------------------------------
+   Flexible Text
+---------------------------------------- */
+
+.pure-flexible-text {
+    width: 100%;
+}

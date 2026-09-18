@@ -1,0 +1,17 @@
+label: Space Below
+type: select
+default: none
+empty: false
+required: true
+options:
+  none: None
+  xxs: XXS
+  xs: XS
+  s: S
+  m: M
+  l: L
+  xl: XL
+  xxl: XXL
+  3xl: 3XL
+  4xl: 4XL
+width: 1/3

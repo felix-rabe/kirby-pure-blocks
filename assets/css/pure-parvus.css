@@ -1,0 +1,74 @@
+/* ----------------------------------------
+   Parvus Lightbox
+---------------------------------------- */
+
+.pure-image-desktop,
+.pure-image-mobile {
+    width: 100%;
+}
+
+
+/* Mobile */
+
+@media screen and (max-width: 991px) {
+    .pure-image-desktop {
+        display: none;
+    }
+
+    .pure-image-mobile {
+        display: block;
+    }
+}
+
+
+/* Desktop */
+
+@media screen and (min-width: 992px) {
+    .pure-image-mobile {
+        display: none;
+    }
+
+    .pure-image-desktop {
+        display: block;
+    }
+}
+
+
+/* Lightbox */
+
+body .parvus__slide {
+    padding: var(--size-m) !important;
+}
+
+.parvus__counter {
+    display: none !important;
+}
+
+
+/* Remove focus styles from Parvus buttons */
+
+.parvus__btn:focus,
+.parvus__btn:focus-visible {
+    outline: none !important;
+    box-shadow: none !important;
+    -webkit-tap-highlight-color: transparent !important;
+}
+
+
+/* Firefox inner button focus fix */
+
+.parvus__btn::-moz-focus-inner {
+    border: 0;
+    padding: 0;
+}
+
+
+.parvus-zoom__indicator,
+.parvus__btn {
+    border-radius: var(--btn-border-radius) !important;
+}
+
+
+a.lightbox {
+    display: block;
+}

@@ -1,0 +1,138 @@
+label: Blocks Settings
+icon: cog
+sections:
+  blocks:
+    type: fields
+    fields:
+      parvusLightboxSettings:
+        type: headline
+        label: Lightbox
+
+      parvusLightboxInfo:
+        type: info
+        label: false
+        theme: none
+        text: <strong>Paruvs Lightbox</strong> (MIT License) by Benjamin de Oostfrees
+        width: 1/1
+
+      parvusButtonColor:
+        type: color
+        alpha: true
+        label: Button Color
+        default: false
+        placeholder: "Secondary Color"
+        width: 1/4
+
+      parvusButtonBackgroundColor:
+        type: color
+        alpha: true
+        label: Button Background Color
+        default: false
+        placeholder: "Transparent"
+        width: 1/4
+
+      parvusButtonDisabledColor:
+        type: color
+        alpha: true
+        label: Button Disabled Color
+        default: false
+        placeholder: "Fourth Color"
+        width: 1/4
+
+      parvusButtonDisabledBackgroundColor:
+        type: color
+        alpha: true
+        label: Button Disabled Background Color
+        default: false
+        placeholder: "Transparent"
+        width: 1/4
+
+      parvusButtonHoverColor:
+        type: color
+        alpha: true
+        label: Button Hover Color
+        default: false
+        placeholder: "Secondary Color"
+        width: 1/4
+
+      parvusButtonHoverBackgroundColor:
+        type: color
+        alpha: true
+        label: Button Hover Background Color
+        default: false
+        width: 1/4
+        placeholder: "Transparent"
+
+      parvusBackgroundColor:
+        type: color
+        alpha: true
+        alpha: true
+        label: Background Color
+        default: false
+        placeholder: "Primary Color"
+        width: 1/4
+
+      parvusCaptionColor:
+        type: color
+        alpha: true
+        label: Lightbox Caption Color
+        default: false
+        placeholder: "Fourth Color"
+        width: 1/4
+
+      swiperSettings:
+        type: headline
+        label: Slider
+
+      swiperInfo:
+        type: info
+        label: false
+        theme: none
+        text: <strong>Swiper</strong> (MIT License) by Vladimir Kharlampidi
+        width: 1/1
+
+      swiperNavigationColor:
+        type: color
+        alpha: true
+        label: Navigation Color
+        default: false
+        placeholder: "Primary Color"
+        width: 1/4
+        help: For left and right **arrows**.
+
+      swiperPaginationColor:
+        type: color
+        alpha: true
+        label: Pagination Color
+        default: false
+        placeholder: "Primary Color"
+        width: 1/4
+        help: For the **pagination bullets**.
+
+      swiperPaginationBulletInactiveColor:
+        type: color
+        alpha: true
+        label: Pagination Bullet Inactive Color
+        default: false
+        placeholder: "Primary Color"
+        width: 1/4
+        help: For the opaque **inactive pagination bullets**.
+
+      imageFormatsHeadline:
+        type: headline
+        label: Image Formats
+
+      jpegEnabled:
+        type: toggle
+        label: JPEG
+        default: true
+        disabled: true
+        width: 1/4
+        help: The default and fallback image format that is supported by all browsers.
+
+      webpEnabled:
+        type: toggle
+        label: WebP
+        default: true
+        width: 1/4
+        help: A recommended modern image format with superior compression and performance.

@@ -1,0 +1,7 @@
+label: Anchor
+type: slug
+icon: anchor
+before: "#"
+placeholder: section-id
+help: Optional anchor without #
+translate: false

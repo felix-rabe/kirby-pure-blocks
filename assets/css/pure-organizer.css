@@ -1,0 +1,317 @@
+/* ----------------------------------------
+   Organizer
+---------------------------------------- */
+
+.pure-organizer {
+    --scale: 1;
+    position: relative;
+    width: 100%;
+    gap: var(--organizer-gap, 0px);
+}
+
+.pure-organizer .pure-organizer-item,
+.pure-organizer .pure-organizer-item .item-inner-wrapper {
+    box-sizing: border-box;
+}
+
+.pure-organizer .pure-organizer-item {
+    position: relative;
+    width: 100%;
+}
+
+.pure-organizer .pure-organizer-item .item-inner-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+@media screen and (max-width: 991px) {
+    .pure-organizer {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: var(--organizer-gap, 0px);
+        height: auto !important;
+    }
+}
+
+@media screen and (min-width: 992px) {
+    .pure-organizer .pure-organizer-item {
+        position: absolute;
+        margin: 0;
+    }
+}
+
+
+/* ----------------------------------------
+   Missing Thumbnail
+---------------------------------------- */
+
+.pure-organizer-no-thumbnail {
+    display: grid;
+    place-items: center;
+    width: 100%;
+    aspect-ratio: 3 / 2;
+    padding: var(--size-m);
+    box-sizing: border-box;
+    border: 0;
+    background: #ebeced;
+    color: #999;
+    text-align: center;
+}
+
+
+/* ----------------------------------------
+   Empty Filter Result
+---------------------------------------- */
+
+.pure-organizer-filter-empty {
+    width: 100%;
+    padding: var(--size-m) 0;
+    opacity: 0;
+    transform: translateY(16px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.pure-organizer-filter-empty.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.pure-organizer-filter-empty[hidden] {
+    display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .pure-organizer-filter-empty {
+        transform: none;
+        transition: none;
+    }
+}
+
+
+/* ----------------------------------------
+   Filters
+---------------------------------------- */
+
+.filter-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--size-xs);
+    z-index: 3;
+    margin-bottom: var(--size-m);
+}
+
+.filter-buttons.is-sticky {
+    position: sticky;
+    top: var(--header-height, 0px);
+}
+
+.filter-buttons.is-sticky.sticky-top-xxs {
+    top: calc(var(--header-height, 0px) + var(--size-xxs));
+}
+
+.filter-buttons.is-sticky.sticky-top-xs {
+    top: calc(var(--header-height, 0px) + var(--size-xs));
+}
+
+.filter-buttons.is-sticky.sticky-top-s {
+    top: calc(var(--header-height, 0px) + var(--size-s));
+}
+
+.filter-buttons.is-sticky.sticky-top-m {
+    top: calc(var(--header-height, 0px) + var(--size-m));
+}
+
+.filter-buttons.is-sticky.sticky-top-l {
+    top: calc(var(--header-height, 0px) + var(--size-l));
+}
+
+.filter-buttons.is-sticky.sticky-top-xl {
+    top: calc(var(--header-height, 0px) + var(--size-xl));
+}
+
+
+/* ----------------------------------------
+   Filter Button States
+---------------------------------------- */
+
+.btn.mini-btn {
+    padding: var(--size-xxs) var(--size-xs);
+    font-size: var(--size-xs);
+}
+
+.btn.active {
+    background-color: var(--btn-hover-background-color);
+    color: var(--btn-hover-color);
+    border-color: var(--btn-hover-border-color);
+}
+
+@media screen and (min-width: 992px) {
+    button.btn:hover {
+        background-color: var(--btn-hover-background-color);
+        color: var(--btn-hover-color);
+        border-color: var(--btn-hover-border-color);
+    }
+}
+
+div.btn {
+    display: inline-block;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+/* Organizer metadata uses the button appearance as a passive label only. */
+.meta-wrapper .btn {
+    pointer-events: none;
+    cursor: default;
+    transition: none;
+}
+
+
+/* ----------------------------------------
+   Scale Controls
+---------------------------------------- */
+
+.scale-controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: auto;
+    padding-top: 1px;
+    padding-bottom: 1px;
+    border: 1px solid var(--btn-border-color);
+}
+
+.filter-buttons .scale-controls {
+    padding: var(--btn-padding);
+    border-radius: var(--btn-border-radius);
+    background-color: var(--btn-background-color);
+}
+
+.scale-label {
+    font-size: 1rem;
+    color: var(--color-primary);
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.pure-organizer-scale {
+    -webkit-appearance: none;
+    appearance: none;
+    background: transparent;
+    flex-grow: 1;
+    cursor: pointer;
+}
+
+
+/* Range Track */
+
+.pure-organizer-scale::-webkit-slider-runnable-track {
+    background: #999999;
+    height: 2px;
+}
+
+.pure-organizer-scale::-moz-range-track {
+    background: #999999;
+    height: 2px;
+}
+
+
+/* Range Thumb */
+
+.pure-organizer-scale::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    height: 18px;
+    width: 36px;
+    background-color: var(--color-secondary);
+    border-radius: var(--btn-border-radius);
+    margin-top: -8px;
+    border: 1px solid var(--btn-border-color);
+    cursor: grab;
+
+    transition:
+        background-color 300ms ease,
+        color 300ms ease,
+        border-color 300ms ease;
+}
+
+.pure-organizer-scale::-webkit-slider-thumb:hover,
+.pure-organizer-scale::-webkit-slider-thumb:active {
+    background-color: var(--btn-hover-background-color);
+}
+
+.pure-organizer-scale::-moz-range-thumb {
+    height: 18px;
+    width: 32px;
+    background-color: var(--color-secondary);
+    border-radius: var(--btn-border-radius);
+    border: 1px solid var(--btn-border-color);
+    cursor: grab;
+}
+
+.pure-organizer-scale::-webkit-slider-thumb:active {
+    cursor: grabbing;
+}
+
+
+/* ----------------------------------------
+   Scale Icons
+---------------------------------------- */
+
+.icon-grid-small,
+.icon-grid-large {
+    display: grid;
+    gap: 2px;
+    flex-shrink: 0;
+}
+
+.icon-grid-small {
+    grid-template-columns: repeat(2, 1fr);
+    width: 16px;
+    height: 16px;
+}
+
+.icon-grid-small span {
+    width: 7px;
+    height: 7px;
+    background-color: #999999;
+}
+
+.icon-grid-large {
+    width: 16px;
+    height: 16px;
+}
+
+.icon-grid-large span {
+    width: 100%;
+    height: 100%;
+    background-color: #999999;
+}
+
+@media screen and (max-width: 991px) {
+    .scale-controls {
+        display: none;
+    }
+}
+
+
+/* ----------------------------------------
+   Meta Information
+---------------------------------------- */
+
+.meta-wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    gap: var(--size-xxs);
+    padding: var(--size-xxs);
+}
+
+.meta-infos-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--size-xxs);
+}

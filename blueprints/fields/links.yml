@@ -1,0 +1,23 @@
+type: structure
+
+fields:
+  label:
+    type: text
+
+  link:
+    type: link
+
+  anchor:
+    type: text
+    label: Anchor
+    placeholder: section-id
+    before: #
+    help: Optional anchor without #
+
+  newTab:
+    type: toggle
+    label: Open in new tab
+    default: false
+    text:
+      - Same tab
+      - New tab

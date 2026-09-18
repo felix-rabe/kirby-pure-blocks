@@ -1,0 +1,10 @@
+label: Text Alignment
+type: select
+default: left
+required: true
+options:
+  left: Left
+  center: Center
+  right: Right
+  justify: Justify
+width: 1/3

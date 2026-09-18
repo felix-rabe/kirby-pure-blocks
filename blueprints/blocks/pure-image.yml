@@ -1,0 +1,104 @@
+name: Pure Image
+icon: image
+preview: pure-image
+
+fields:
+  image:
+    label: field.blocks.image.name
+    type: files
+    query: model.images
+    multiple: false
+    image:
+      back: black
+    uploads:
+      template: blocks/image
+
+  crop:
+    label: field.blocks.image.crop
+    type: toggle
+    width: 1/3
+
+  ratio:
+    label: field.blocks.image.ratio
+    type: select
+    placeholder: Auto
+    width: 1/3
+    options:
+      1/1: "1:1"
+      16/9: "16:9"
+      10/8: "10:8"
+      21/9: "21:9"
+      7/5: "7:5"
+      5/4: "5:4"
+      4/3: "4:3"
+      5/3: "5:3"
+      3/2: "3:2"
+      3/1: "3:1"
+      2/3: "2:3"
+      3/4: "3:4"
+      4/5: "4:5"
+      5/7: "5:7"
+      9/16: "9:16"
+    when:
+      crop: true
+
+  corners:
+    extends: fields/corners
+
+  border:
+    label: Border
+    type: toggle
+    width: 1/3
+
+  borderColor:
+    label: Border Color
+    type: color
+    alpha: true
+    placeholder: "Primary Color"
+    width: 1/3
+    when:
+      border: true
+
+  activateLightbox:
+    label: Activate Desktop Lightbox
+    type: toggle
+    width: 1/3
+    text:
+      - "No"
+      - "Yes"
+
+  alt:
+    label: field.blocks.image.alt
+    type: text
+    icon: title
+
+  linkObject:
+    label: field.blocks.image.link
+    type: object
+    fields:
+      link:
+        label: Link
+        type: link
+      target:
+        label: Open in new window?
+        type: toggle
+        text:
+          - "No"
+          - "Yes"
+
+  captionHeadline:
+    label: Caption
+    type: headline
+
+  caption:
+    label: Text
+    type: writer
+    icon: text
+    inline: true
+
+  captionTextAlign:
+    label: Caption Alignment
+    extends: fields/text-align
+
+  anchor:
+    extends: fields/anchor
