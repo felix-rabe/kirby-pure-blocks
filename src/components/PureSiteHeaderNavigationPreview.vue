@@ -16,7 +16,7 @@
 
     <div
       v-if="sticky"
-      class="pure-site-header-navigation-preview__indicators"
+      class="pure-text-preview__indicators"
     >
       <span class="pure-preview__indicator">
         Sticky

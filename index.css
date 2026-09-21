@@ -55,14 +55,17 @@
   position: relative;
 }
 
-.pure-site-header-navigation-preview__indicators {
+.pure-text-preview__indicators {
   position: absolute;
   top: 0;
   left: 0;
+  z-index: 2;
 
   display: flex;
   gap: 0.5rem;
   align-items: center;
+
+  pointer-events: none;
 }
 
 .pure-site-header-navigation-preview__indicator {
