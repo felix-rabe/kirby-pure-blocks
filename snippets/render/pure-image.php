@@ -5,6 +5,7 @@ $focus ??= $imageFile?->focus()?->isNotEmpty() ? $imageFile->focus()->value() : 
 $linkUrl ??= null;
 $linkTarget ??= '';
 $size ??= 2400;
+$quality ??= null; // Optional per-render override for generated raster quality
 
 $captionContent ??= null;
 $captionClasses ??= '';
@@ -86,7 +87,7 @@ if ($imageFile):
                     'sharpen' => 25,
                     'crop' => $crop,
                     'format' => 'webp',
-                    'quality' => 75
+                    'quality' => $quality ?? 75
                 ]);
                 $webpSrcset .= $webpThumb->url() . ' ' . $webpThumb->width() . 'w, ';
             }
@@ -103,7 +104,7 @@ if ($imageFile):
                     'sharpen' => 25,
                     'crop' => $crop,
                     'format' => 'jpeg',
-                    'quality' => 80
+                    'quality' => $quality ?? 80
                 ]);
                 $jpegSrcset .= $jpegThumb->url() . ' ' . $jpegThumb->width() . 'w, ';
             }
