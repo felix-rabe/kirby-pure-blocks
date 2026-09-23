@@ -4,7 +4,7 @@
 
 ### About
 
-`Kirby Pure Blocks` extends `Kirby Pure` with reusable blocks, page-building infrastructure, navigation, and shared image, video and link rendering.
+`Kirby Pure Blocks` extends `Kirby Pure` with a shared image, video and link rendering, and reusable reference-blocks.
 
 It includes image, video, swiper, flexible text, organizer and spacer blocks as well as basic header and footer navigation.
 

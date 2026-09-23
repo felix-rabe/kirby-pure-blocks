@@ -118,9 +118,9 @@ sections:
         width: 1/4
         help: For the opaque **inactive pagination bullets**.
 
-      imageFormatsHeadline:
+      imagesHeadline:
         type: headline
-        label: Image Formats
+        label: Images
 
       jpegEnabled:
         type: toggle
@@ -136,3 +136,11 @@ sections:
         default: true
         width: 1/4
         help: A recommended modern image format with superior compression and performance.
+
+
+      generateThumbs:
+        label: Responsive Image Sizes
+        type: toggle
+        default: false
+        width: 1/4
+        help: Generate responsive image sizes in 400, 600, 800, 1000, 1200, 1520, 2000, 2400 and 3040px width. Default size is 2400px.
