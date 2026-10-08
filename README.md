@@ -118,7 +118,14 @@ Pure Blocks can be made available throughout your project via your site's `confi
                 'pure-image',
                 'pure-video',
                 'pure-swiper',
+            ],
+        ],
+        'Text' => [
+            'label' => 'Text',
+            'type' => 'group',
+            'fieldsets' => [
                 'pure-flexible-text',
+                'pure-button',
             ],
         ],
         'Compositions' => [
@@ -141,6 +148,7 @@ fieldsets:
   - pure-video
   - pure-swiper
   - pure-flexible-text
+  - pure-button
   - pure-organizer
   - pure-spacer
 ```
