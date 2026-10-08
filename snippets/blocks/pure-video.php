@@ -6,6 +6,8 @@
 $caption = $block->caption();
 $width   = $block->width();
 $height  = $block->height();
+$objectFit = $block->objectFit()->or('contain')->value();
+$objectPosition = $block->objectPosition()->or('center center')->value();
 
 // Defaults passed to the renderer
 $url             = null;
@@ -72,6 +74,7 @@ $controls    = $block->controls()->toBool();
 $loop        = $block->loop()->toBool();
 $muted       = $block->muted()->toBool() || $autoplay;
 $playsinline = $autoplay;
+$activateLightbox = $block->activateLightbox()->toBool();
 
 // Dimensions
 $videoWidth  = $width->isNotEmpty() ? (float)$width->value() : null;
@@ -87,12 +90,16 @@ snippet('render/pure-video', [
     'linkTarget'         => $linkTarget,
     'width'              => $videoWidth,
     'height'             => $videoHeight,
+    'objectFit'          => $objectFit,
+    'objectPosition'     => $objectPosition,
     'autoplay'           => $autoplay,
     'controls'           => $controls,
     'loop'               => $loop,
     'muted'              => $muted,
     'playsinline'        => $playsinline,
     'preload'            => 'none',
+    'activateLightbox'    => $activateLightbox,
+    'lightboxGroup'       => 'gallery',
     'thumbhashSvgUri'    => $thumbhashSvgUri,
     'onScrollTransition' => true,
 ]);

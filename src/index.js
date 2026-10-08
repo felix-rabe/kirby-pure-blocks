@@ -1,3 +1,5 @@
+import "./layoutPreview.css";
+import PureLayoutFieldPreview from "./layoutPreview.js";
 import PureSiteHeaderNavigationPreview from "./components/PureSiteHeaderNavigationPreview.vue";
 import PureSiteFooterNavigationPreview from "./components/PureSiteFooterNavigationPreview.vue";
 import PureSpacerPreview from "./components/PureSpacerPreview.vue"; 
@@ -6,8 +8,12 @@ import PureFlexibleTextPreview from "./components/PureFlexibleTextPreview.vue";
 import PureVideoPreview from "./components/PureVideoPreview.vue";
 import PureSwiperPreview from "./components/PureSwiperPreview.vue";
 import PureOrganizerPreview from "./components/PureOrganizerPreview.vue";
+import PureButtonPreview from "./components/PureButtonPreview.vue";
 
 panel.plugin("kirbypure/blocks", {
+  components: {
+    "k-layout-field": PureLayoutFieldPreview
+  },
   blocks: {
     "pure-site-header-navigation": PureSiteHeaderNavigationPreview,
     "pure-site-footer-navigation": PureSiteFooterNavigationPreview,
@@ -16,6 +22,7 @@ panel.plugin("kirbypure/blocks", {
     "pure-flexible-text": PureFlexibleTextPreview,
     "pure-video": PureVideoPreview,
     "pure-swiper": PureSwiperPreview,
-    "pure-organizer": PureOrganizerPreview
+    "pure-organizer": PureOrganizerPreview,
+    "pure-button": PureButtonPreview
   }
 });

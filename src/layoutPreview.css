@@ -1,0 +1,56 @@
+/*
+ * Layout Builder preview
+ *
+ * The values are set from layout.attrs by layoutPreview.js. This deliberately
+ * previews only layout-level settings; page-level maxLayoutWidth* settings are
+ * not part of this layer.
+ */
+.k-layout.pure-layout-preview {
+  margin-block-start: var(--pure-layout-preview-margin-top, 0);
+  margin-block-end: var(--pure-layout-preview-margin-bottom, 0);
+  margin-inline-start: var(--pure-layout-preview-margin-sides, 0);
+  margin-inline-end: var(--pure-layout-preview-margin-sides, 0);
+}
+
+.k-layout.pure-layout-preview > .k-layout-columns {
+  position: relative;
+  box-sizing: border-box;
+  width: min(100%, var(--pure-layout-preview-max-width, 100%));
+  margin-inline-start: var(--pure-layout-preview-max-width-margin-left, 0);
+  margin-inline-end: var(--pure-layout-preview-max-width-margin-right, 0);
+  padding-block-start: var(--pure-layout-preview-padding-top, 0);
+  padding-block-end: var(--pure-layout-preview-padding-bottom, 0);
+  padding-inline-start: var(--pure-layout-preview-padding-sides, 0);
+  padding-inline-end: var(--pure-layout-preview-padding-sides, 0);
+  column-gap: var(--pure-layout-preview-column-gap, 0) !important;
+  align-items: var(--pure-layout-preview-align-items, start);
+}
+
+.k-layout.pure-layout-preview > .k-layout-columns > .k-layout-column .k-blocks {
+  row-gap: var(--pure-layout-preview-row-gap, 1rem) !important;
+}
+
+/* Background on the inner section, matching pure-layout.php's default. */
+.k-layout.pure-layout-preview:not([data-pure-background-full-bleed="true"]) > .k-layout-columns {
+  background-color: var(--pure-layout-preview-background, transparent);
+}
+
+/* Full-bleed background belongs to the outer layout section. */
+.k-layout.pure-layout-preview[data-pure-background-full-bleed="true"] {
+  background-color: var(--pure-layout-preview-background, transparent);
+}
+
+/* A full-bleed section ignores its section max-width in the frontend as well. */
+.k-layout.pure-layout-preview--full-bleed > .k-layout-columns {
+  width: 100%;
+  margin-inline: 0;
+}
+
+
+
+/* Allow layout columns and their block wrappers to shrink inside narrow previews. */
+.k-layout.pure-layout-preview > .k-layout-columns > .k-layout-column,
+.k-layout.pure-layout-preview > .k-layout-columns > .k-layout-column .k-blocks,
+.k-layout.pure-layout-preview > .k-layout-columns > .k-layout-column .k-block {
+  min-width: 0;
+}

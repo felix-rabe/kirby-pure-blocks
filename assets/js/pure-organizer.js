@@ -22,9 +22,46 @@
         return Math.max(1, Math.min(12, Number.isFinite(span) ? span : 12));
     };
 
-    const itemWidth = (span, scale, columnWidth, gutterX, containerWidth) => {
+    const minMaxWidth = (span, naturalWidth) => {
+        // Default Pure size scale. Projects can override each step through CSS:
+        // --organizer-minmax-1-min / --organizer-minmax-1-max … 12.
+        const root = document.documentElement;
+        const styles = getComputedStyle(root);
+        const defaultMins = [60, 170, 280, 410, 520, 630, 740, 850, 960, 1070, 1180, 1290];
+        const defaultMaxs = [140, 250, 360, 490, 600, 710, 820, 930, 1040, 1150, 1260, 1370];
+        const defaultMin = defaultMins[span - 1];
+        const defaultMax = defaultMaxs[span - 1];
+        const customMin = parseNumber(styles.getPropertyValue(`--organizer-minmax-${span}-min`), defaultMin);
+        const customMax = parseNumber(styles.getPropertyValue(`--organizer-minmax-${span}-max`), defaultMax);
+        const min = Math.min(customMin, customMax);
+        const max = Math.max(customMin, customMax);
+        return Math.max(min, Math.min(max, naturalWidth));
+    };
+
+    const fluidMinMaxWidth = (span, naturalWidth, containerWidth, gutterX) => {
+        // Min–Max defines the preferred size class. From that preferred width
+        // we derive a column count, then distribute the available container
+        // width evenly across those columns. This keeps the Organizer fluid
+        // and avoids unused space at the right edge.
+        const preferredWidth = minMaxWidth(span, naturalWidth);
+        // Min–Max is a sizing preference, not a hard packing constraint.
+        // Allow items to compress by up to 25% when that lets another
+        // column fit; the resulting columns are then stretched evenly
+        // across the full Organizer width.
+        const packingWidth = preferredWidth * 0.90;
+        const columns = Math.max(1, Math.floor(
+            (containerWidth + gutterX) / Math.max(1, packingWidth + gutterX)
+        ));
+        return (containerWidth - (gutterX * Math.max(0, columns - 1))) / columns;
+    };
+
+    const itemWidth = (span, scale, columnWidth, gutterX, containerWidth, widthMode) => {
         const natural = (columnWidth * span) + (gutterX * Math.max(0, span - 1));
-        return Math.min(containerWidth, Math.max(columnWidth, natural * scale));
+        const baseWidth = widthMode === 'minmax'
+            ? fluidMinMaxWidth(span, natural, containerWidth, gutterX)
+            : natural;
+        const width = baseWidth * scale;
+        return Math.min(containerWidth, Math.max(0, width));
     };
 
     const measureHeight = (item, width) => {
@@ -36,13 +73,13 @@
     };
 
     const layoutGrid = (grid, items, options) => {
-        const { containerWidth, columnWidth, gutterX, gutterY, scale } = options;
+        const { containerWidth, columnWidth, gutterX, gutterY, scale, widthMode } = options;
         let x = 0;
         let y = 0;
         let rowHeight = 0;
 
         items.forEach(item => {
-            const width = itemWidth(itemSpan(item), scale, columnWidth, gutterX, containerWidth);
+            const width = itemWidth(itemSpan(item), scale, columnWidth, gutterX, containerWidth, widthMode);
             const height = measureHeight(item, width);
 
             if (x > 0 && x + width > containerWidth + 0.5) {
@@ -62,7 +99,7 @@
     };
 
     const layoutMasonry = (grid, items, options) => {
-        const { containerWidth, columnWidth, gutterX, gutterY, scale } = options;
+        const { containerWidth, columnWidth, gutterX, gutterY, scale, widthMode } = options;
         const placed = [];
         const epsilon = 0.5;
 
@@ -92,7 +129,7 @@
         };
 
         items.forEach(item => {
-            const width = itemWidth(itemSpan(item), scale, columnWidth, gutterX, containerWidth);
+            const width = itemWidth(itemSpan(item), scale, columnWidth, gutterX, containerWidth, widthMode);
             const height = measureHeight(item, width);
             const candidates = candidatePositions(width);
 
@@ -138,10 +175,11 @@
 
         const items = visibleItems(grid);
         const styles = getComputedStyle(grid);
-        const gap = parseNumber(styles.columnGap || styles.gap, 0);
-        const gutterX = gap;
-        const gutterY = gap;
+        const gutterX = parseNumber(styles.columnGap || styles.gap, 0);
+        const gutterY = parseNumber(styles.rowGap || styles.gap, 0);
         const scale = parseNumber(grid.style.getPropertyValue('--scale'), 1) || 1;
+
+        const requestedWidthMode = grid.dataset.widthMode || 'span';
 
         if (window.innerWidth < DESKTOP_MIN) {
             grid.style.height = '';
@@ -154,7 +192,8 @@
         if (!containerWidth) return;
 
         const columnWidth = (containerWidth - (11 * gutterX)) / 12;
-        const options = { containerWidth, columnWidth, gutterX, gutterY, scale };
+        const widthMode = requestedWidthMode === 'minmax' ? 'minmax' : 'span';
+        const options = { containerWidth, columnWidth, gutterX, gutterY, scale, widthMode };
 
         if (grid.dataset.layout === 'masonry') {
             layoutMasonry(grid, items, options);
@@ -284,7 +323,26 @@
         // the pre-layout document flow.
         layout(grid);
 
-        return waitForInitialVideoGeometry(grid);
+        // Do not block Pure's reveal system while videos are waiting for
+        // metadata. This is especially noticeable when the browser restores a
+        // scroll position on reload: visible organizer items would otherwise
+        // remain hidden for up to 1500 ms. Keep the media geometry refinement
+        // running in the background; its own final layout pass still updates
+        // the organizer as soon as metadata is available.
+        waitForInitialVideoGeometry(grid).catch(() => undefined);
+
+        // Give the browser two frames to restore its saved scroll position,
+        // then commit the current organizer geometry before signalling that
+        // the initial layout is ready. This keeps items above the restored
+        // viewport hidden until the user actually scrolls back to them.
+        return new Promise(resolve => {
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                    layout(grid);
+                    resolve();
+                });
+            });
+        });
     };
 
     const initAccordions = () => {
@@ -318,15 +376,17 @@
         initialReady,
     };
 
-    document.addEventListener('DOMContentLoaded', () => {
-        initAccordions();
+    // Initialize immediately. This script is injected after the page markup, so
+    // organizer elements already exist here. Waiting for DOMContentLoaded lets
+    // Unlazy initialize while organizer items still have their pre-layout
+    // positions, which can make off-screen images appear viewport-adjacent.
+    initAccordions();
 
-        const grids = Array.from(
-            document.querySelectorAll('.pure-organizer[data-layout]')
-        );
+    const grids = Array.from(
+        document.querySelectorAll('.pure-organizer[data-layout]')
+    );
 
-        Promise.all(grids.map(initGrid))
-            .catch(() => undefined)
-            .then(() => resolveInitialReady());
-    });
+    Promise.all(grids.map(initGrid))
+        .catch(() => undefined)
+        .then(() => resolveInitialReady());
 })();

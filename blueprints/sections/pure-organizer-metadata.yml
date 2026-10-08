@@ -27,12 +27,17 @@ fields:
     default: 6
     help: 12 is Full Width, 6 is Half, 4 is One Third, etc.
 
-  date:
-    width: 1/2
-    label: Date
-    type: date
-
   tags:
     width: 1/2
     label: Tags
     type: tags
+
+  groups:
+    width: 1/2
+    label: Groups
+    type: tags
+
+  date:
+    width: 1/2
+    label: Date
+    type: date

@@ -45,7 +45,7 @@ fields:
         label: Width
         type: number
         after: px
-        width: 1/3
+        width: 1/4
         min: 1
         step: 1
         placeholder: e.g. 1920
@@ -56,10 +56,42 @@ fields:
         label: Height
         type: number
         after: px
-        width: 1/3
+        width: 1/4
         min: 1
         step: 1
         placeholder: e.g. 1080
+        when:
+          location: kirby
+
+      objectFit:
+        label: Object Fit
+        type: select
+        width: 1/4
+        default: contain
+        options:
+          contain: Contain
+          cover: Cover
+          fill: Fill
+          none: None
+          scale-down: Scale Down
+        when:
+          location: kirby
+
+      objectPosition:
+        label: Object Position
+        type: select
+        width: 1/4
+        default: center center
+        options:
+          left top: Left Top
+          center top: Center Top
+          right top: Right Top
+          left center: Left Center
+          center center: Center
+          right center: Right Center
+          left bottom: Left Bottom
+          center bottom: Center Bottom
+          right bottom: Right Bottom
         when:
           location: kirby
 
@@ -95,6 +127,16 @@ fields:
     type: toggle
     width: 1/3
     default: false
+    when:
+      location: kirby
+
+  activateLightbox:
+    label: Activate Desktop Lightbox
+    type: toggle
+    width: 1/3
+    text:
+      - "No"
+      - "Yes"
     when:
       location: kirby
 

@@ -60,6 +60,18 @@ $subpagesToDisplay = (function () use ($block, $site) {
         });
     }
 
+    // Optional server-side Groups filter. Groups are a second, independent taxonomy.
+    $selectedGroups = array_values(array_filter(array_map('trim',
+        explode(',', (string)$block->filterByGroups()->value())
+    )));
+
+    if (!empty($selectedGroups)) {
+        $subs = $subs->filter(function ($p) use ($selectedGroups) {
+            $pageGroups = fieldTags($p, 'groups');
+            return count(array_intersect($selectedGroups, $pageGroups)) > 0;
+        });
+    }
+
     // Apply Sort Order (Reverse if toggled in the Panel)
     if ($block->orderToggle()->toBool()) {
         $subs = $subs->flip();
@@ -89,13 +101,16 @@ endif;
 // ---------------- Display Mode & Settings ----------------
 
 $displayMode          = $block->displayMode()->or('grid')->value();
+$widthMode            = $block->widthMode()->or('span')->value();
 $enableTagFilter      = $block->tagFilter()->toBool();
+$enableGroupFilter    = $block->groupFilter()->toBool();
 $enableFilterMulti    = $block->filterMulti()->toBool();
 $enableDateFilter     = $block->dateFilter()->toBool();
 $marginFilterButtons  = $block->marginBottomFilterButtons()->or('none')->value();
 $filterSticky         = $block->filterSticky()->toBool();
 $stickyFilterTop      = $block->stickyFilterTop()->or('none')->value();
 $showTags            = $block->showTags()->toBool();
+$showGroups          = $block->showGroups()->toBool();
 $showPageTitle       = $block->showPageTitle()->toBool();
 
 $layoutMode = in_array($displayMode, ['grid', 'masonry'], true)
@@ -105,18 +120,22 @@ $layoutMode = in_array($displayMode, ['grid', 'masonry'], true)
 // Configuration for Grid/Thumbnail Mode
 $gridSettings = [
     'organizerId'            => $block->id(),
-    'gap'                    => $block->gap()->or('s')->value(),
+    'rowGap'                 => $block->rowGap()->or($block->gap()->or('s'))->value(),
+    'columnGap'              => $block->columnGap()->or($block->gap()->or('s'))->value(),
     'alignItems'             => $block->alignItems()->or('start')->value(),
     'justifyContent'         => $block->justifyContent()->or('flex-start')->value(),
     'enableTagFilter'        => $enableTagFilter,
+    'enableGroupFilter'      => $enableGroupFilter,
     'enableFilterMulti'      => $enableFilterMulti,
     'enableDateFilter'       => $enableDateFilter,
     'layoutMode'             => $layoutMode,
+    'widthMode'              => in_array($widthMode, ['span', 'minmax'], true) ? $widthMode : 'span',
     'marginFilterButtons'    => $marginFilterButtons,
     'enableItemScaler'       => $block->itemScaler()->toBool(),
     'filterSticky'           => $filterSticky,
     'stickyFilterTop'        => $stickyFilterTop,
     'showTags'               => $showTags,
+    'showGroups'             => $showGroups,
     'showPageTitle'          => $showPageTitle,
 ];
 

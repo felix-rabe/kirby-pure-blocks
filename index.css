@@ -101,14 +101,30 @@
 .pure-site-footer-navigation-preview {
   min-height: 5rem;
   padding: 1.5rem;
-  display: flex;
-  align-items: center;
 }
 
-.pure-site-footer-navigation-preview__links {
+.pure-site-footer-navigation-preview__columns {
   display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem 1.5rem;
+  width: 100%;
+}
+
+.pure-site-footer-navigation-preview__column,
+.pure-site-footer-navigation-preview__items {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.pure-site-footer-navigation-preview__column {
+  gap: 0.5rem;
+}
+
+.pure-site-footer-navigation-preview__items {
+  gap: 0.25rem;
+}
+
+.pure-site-footer-navigation-preview__title {
+  font-weight: 600;
 }
 
 .pure-site-footer-navigation-preview__empty {
@@ -196,7 +212,7 @@
   border-style: solid;
 }
 .k-block-type-pure-image .pure-image-preview__frame.is-rounded {
-  border-radius: 0.75rem;
+  border-radius: var(--size-xxs);
 }
 .k-block-type-pure-image .pure-image-preview__frame.is-circle {
   aspect-ratio: 1 / 1 !important;
@@ -210,10 +226,6 @@
 }
 .k-block-type-pure-image .pure-image-preview__frame:not([style*="aspect-ratio"]) img {
   height: auto;
-}
-.k-block-type-pure-image .pure-image-preview__frame.is-circle img {
-  height: 100%;
-  object-fit: cover;
 }
 .k-block-type-pure-image .pure-image-preview__caption {
   margin-top: 0.5rem;
@@ -375,8 +387,17 @@
 
 /* Pure Organizer Panel Preview */
 
+.k-block-type-pure-organizer {
+  min-width: 0;
+  max-width: 100%;
+}
+
 .k-block-type-pure-organizer .pure-organizer-preview {
   width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
 .k-block-type-pure-organizer .pure-organizer-preview__indicators {
@@ -391,13 +412,20 @@
 
 .k-block-type-pure-organizer .pure-organizer-preview__grid {
   display: grid;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
   grid-template-columns: repeat(12, minmax(0, 1fr));
   gap: 0.75rem;
   align-items: start;
 }
 
 .k-block-type-pure-organizer .pure-organizer-preview__item {
+  width: 100%;
+  max-width: 100%;
   min-width: 0;
+  box-sizing: border-box;
 }
 
 .k-block-type-pure-organizer .pure-organizer-preview__media {
@@ -412,7 +440,7 @@
 }
 
 .k-block-type-pure-organizer .pure-organizer-preview__media.is-rounded {
-  border-radius: 0.75rem;
+  border-radius: var(--size-xxs);
 }
 
 .k-block-type-pure-organizer .pure-organizer-preview__media.is-circle {
@@ -465,6 +493,98 @@
   overflow-wrap: anywhere;
 }
 
-.k-block-type-pure-flexible-text .pure-flexible-text-preview a {
+.k-block-type-pure-flexible-text .pure-flexible-text-preview a,
+.k-block-type-pure-flexible-text .pure-flexible-text-preview u {
   color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
+
+/* Kirby Pure Blocks: Layout Builder settings preview */
+/*
+ * Layout Builder preview
+ *
+ * The values are set from layout.attrs by layoutPreview.js. This deliberately
+ * previews only layout-level settings; page-level maxLayoutWidth* settings are
+ * not part of this layer.
+ */
+.k-layout.pure-layout-preview {
+  margin-block-start: var(--pure-layout-preview-margin-top, 0);
+  margin-block-end: var(--pure-layout-preview-margin-bottom, 0);
+  margin-inline-start: var(--pure-layout-preview-margin-sides, 0);
+  margin-inline-end: var(--pure-layout-preview-margin-sides, 0);
+}
+
+.k-layout.pure-layout-preview > .k-layout-columns {
+  position: relative;
+  box-sizing: border-box;
+  width: min(100%, var(--pure-layout-preview-max-width, 100%));
+  margin-inline-start: var(--pure-layout-preview-max-width-margin-left, 0);
+  margin-inline-end: var(--pure-layout-preview-max-width-margin-right, 0);
+  padding-block-start: var(--pure-layout-preview-padding-top, 0);
+  padding-block-end: var(--pure-layout-preview-padding-bottom, 0);
+  padding-inline-start: var(--pure-layout-preview-padding-sides, 0);
+  padding-inline-end: var(--pure-layout-preview-padding-sides, 0);
+  column-gap: var(--pure-layout-preview-column-gap, 0) !important;
+  align-items: var(--pure-layout-preview-align-items, start);
+}
+
+.k-layout.pure-layout-preview > .k-layout-columns > .k-layout-column .k-blocks {
+  row-gap: var(--pure-layout-preview-row-gap, 1rem) !important;
+}
+
+/* Background on the inner section, matching pure-layout.php's default. */
+.k-layout.pure-layout-preview:not([data-pure-background-full-bleed="true"]) > .k-layout-columns {
+  background-color: var(--pure-layout-preview-background, transparent);
+}
+
+/* Full-bleed background belongs to the outer layout section. */
+.k-layout.pure-layout-preview[data-pure-background-full-bleed="true"] {
+  background-color: var(--pure-layout-preview-background, transparent);
+}
+
+/* A full-bleed section ignores its section max-width in the frontend as well. */
+.k-layout.pure-layout-preview--full-bleed > .k-layout-columns {
+  width: 100%;
+  margin-inline: 0;
+}
+
+
+/* Allow layout columns and their block wrappers to shrink inside narrow previews. */
+.k-layout.pure-layout-preview > .k-layout-columns > .k-layout-column,
+.k-layout.pure-layout-preview > .k-layout-columns > .k-layout-column .k-blocks,
+.k-layout.pure-layout-preview > .k-layout-columns > .k-layout-column .k-block {
+  min-width: 0;
+}
+
+
+/* Pure Button block preview */
+.pure-button-preview {
+  padding: .5rem 0;
+}
+.pure-button-preview__button {
+  all: unset;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  text-decoration: none;
+  width: auto;
+  max-width: max-content;
+  box-sizing: border-box;
+  color: var(--pure-preview-btn-color);
+  background-color: var(--pure-preview-btn-background);
+  border: 1px solid var(--pure-preview-btn-border);
+  border-radius: var(--pure-preview-btn-radius);
+  padding: var(--pure-preview-btn-padding);
+  transition: color .3s ease, background-color .3s ease, border-color .3s ease;
+  font-family: "TeX Gyre Heros", helvetica, arial, sans-serif;
+  font-weight: 400;
+  letter-spacing: .02em;
+  line-height: normal;
+}
+.pure-button-preview__button:hover {
+  color: var(--pure-preview-btn-hover-color);
+  background-color: var(--pure-preview-btn-hover-background);
+  border-color: var(--pure-preview-btn-hover-border);
 }

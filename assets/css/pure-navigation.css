@@ -145,3 +145,17 @@ html.has-open-navigation {
     gap: 1rem;
   }
 }
+
+/* Footer navigation */
+
+.pure-site-footer-navigation {
+  display: flex;
+  flex-direction: var(--pure-footer-direction, row);
+  gap: var(--pure-footer-gap, var(--size-s));
+}
+
+.pure-site-footer-navigation__items {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}

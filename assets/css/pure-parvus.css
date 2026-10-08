@@ -72,3 +72,118 @@ body .parvus__slide {
 a.lightbox {
     display: block;
 }
+/* Video lightbox: same responsive split and Parvus trigger UI as pure-image */
+.pure-video-desktop,
+.pure-video-mobile {
+    width: 100%;
+}
+
+@media screen and (max-width: 991px) {
+    .pure-video-desktop { display: none; }
+    .pure-video-mobile { display: block; }
+}
+
+@media screen and (min-width: 992px) {
+    .pure-video-mobile { display: none; }
+    .pure-video-desktop { display: block; }
+}
+
+/* Parvus only ships its trigger rule for anchors containing images. */
+.parvus-trigger:has(video) {
+    display: block;
+    position: relative;
+}
+
+.parvus-trigger:has(video) .parvus-zoom__indicator {
+    align-items: center;
+    background-color: var(--parvus-btn-background-color);
+    color: var(--parvus-btn-color);
+    display: flex;
+    inset-block-start: .5rem;
+    inset-inline-end: .5rem;
+    justify-content: center;
+    padding: .5rem;
+    position: absolute;
+}
+
+.parvus-trigger:has(video) video {
+    display: block;
+}
+
+.pure-parvus-video {
+    display: block;
+    max-width: 100%;
+    max-height: calc(100svh - (2 * var(--size-m)));
+    width: auto;
+    height: auto;
+    margin-inline: auto;
+}
+
+/* Invisible image only exists so Parvus creates its native zoom indicator
+   for video triggers, exactly as it does for image triggers. */
+.pure-video__parvus-helper {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+}
+
+/* Video slides: keep Parvus' own image node in the DOM because its internal
+   sizing/close animation references it, while the real video occupies the
+   same lightbox content area. */
+.parvus__content:has(.pure-parvus-video) {
+    display: grid;
+    place-items: center;
+}
+
+.parvus__content:has(.pure-parvus-video) > .pure-parvus-video-placeholder,
+.parvus__content:has(.pure-parvus-video) > .pure-parvus-video {
+    grid-area: 1 / 1;
+    max-width: calc(100vw - 2rem);
+    max-height: calc(100svh - 5rem);
+}
+
+.parvus__content > .pure-parvus-video {
+    display: block;
+    width: auto;
+    height: auto;
+    opacity: 0;
+    transition: opacity var(--parvus-transition-duration) var(--parvus-transition-timing-function);
+}
+
+.parvus__content > .pure-parvus-video.is-visible {
+    opacity: 1;
+}
+
+.parvus__content > .pure-parvus-video-placeholder.is-video-mounted {
+    opacity: 0 !important;
+    pointer-events: none;
+}
+
+/* Keep Parvus' helper image in the DOM for its own transition bookkeeping,
+   but let the real video become the visible lightbox medium. */
+.parvus__content:has(.pure-parvus-video) > img.pure-parvus-video-placeholder {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+}
+
+.parvus__content .pure-parvus-video {
+    opacity: 0;
+    transition: opacity var(--parvus-transition-duration) var(--parvus-transition-timing-function);
+}
+
+.parvus__content .pure-parvus-video.is-visible {
+    opacity: 1;
+}
+
+/* Keep the video visible for Parvus' close phase instead of removing it
+   immediately. The short fade makes video close feel continuous even though
+   Parvus' native zoom transform is image-specific. */
+.parvus__content .pure-parvus-video.is-closing {
+    opacity: 0;
+    pointer-events: none;
+}

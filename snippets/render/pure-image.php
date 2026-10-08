@@ -13,6 +13,32 @@ $captionClasses ??= '';
 $ratio ??= null;
 $crop ??= false;
 
+// A saved ratio can remain in the block content after Crop is switched off
+// because the ratio field is only hidden in the Panel, not cleared.
+// Without cropping, always render the image at its natural aspect ratio.
+if (!$crop) {
+    $ratio = null;
+}
+
+// Only numeric W/H values are valid image ratios. Special layout values such
+// as "auto" or "fullscreen" are handled by their parent component and
+// must not reach the thumbnail/aspect-ratio calculations below.
+$ratioParts = is_string($ratio) ? explode('/', $ratio, 2) : [];
+if (
+    count($ratioParts) !== 2 ||
+    !is_numeric($ratioParts[0]) ||
+    !is_numeric($ratioParts[1]) ||
+    (float)$ratioParts[0] <= 0 ||
+    (float)$ratioParts[1] <= 0
+) {
+    $ratio = null;
+    $wRatio = null;
+    $hRatio = null;
+} else {
+    $wRatio = (float)$ratioParts[0];
+    $hRatio = (float)$ratioParts[1];
+}
+
 // --- Corners ---
 $corners ??= 'square';
 
@@ -71,9 +97,7 @@ if ($imageFile):
         $thumbHeight = null;
 
         // Apply ratio if set
-        if ($ratio) {
-            [$wRatio, $hRatio] = explode('/', $ratio);
-        }
+        // $wRatio/$hRatio were validated once above.
 
         try {
             // Generate WebP srcset
@@ -120,14 +144,13 @@ if ($imageFile):
 
     // --- Aspect-ratio for container / placeholder ---
     if ($ratio) {
-        [$wRatio, $hRatio] = explode('/', $ratio);
         $ratioDecimal = round($wRatio / $hRatio, 4);
     } elseif ($width && $height) {
         $ratioDecimal = round($width / $height, 4);
     } else {
         $ratioDecimal = 1; // fallback square
     }
-    $aspectRatioStyle = "aspect-ratio: {$ratioDecimal};";
+    $aspectRatioStyle = "aspect-ratio: {$ratioDecimal}; --pure-image-ratio: {$ratioDecimal};";
 
     // Image orientation classes
     $isLandscape = $imageFile->isLandscape();
@@ -149,18 +172,24 @@ if ($imageFile):
         $isLandscape ? 'is-landscape' : ($isPortrait ? 'is-portrait' : ($isSquare ? 'is-square' : ''))
     ]));
 
-    // --- Lightbox source (respects crop) ---
+    // --- Lightbox source ---
+    // Never hand Parvus the full-size raster original. Generate a dedicated,
+    // compressed lightbox thumb instead. GIF/SVG keep their original URL.
     $lightboxSrc = $imageFile->url();
-    if ($activateLightbox && $crop && $canGenerateThumbs) {
+    if ($activateLightbox && $canGenerateThumbs) {
         try {
+            $lightboxWidth = min(2500, $imageFile->width());
             $lightboxThumb = $imageFile->thumb([
-                'width' => 2500,
-                'height' => $ratio ? intval(2500 * $hRatio / $wRatio) : null,
-                'crop' => true,
+                'width' => $lightboxWidth,
+                'height' => ($crop && $ratio) ? intval($lightboxWidth * $hRatio / $wRatio) : null,
+                'sharpen' => 25,
+                'crop' => $crop,
+                'format' => 'webp',
+                'quality' => $quality ?? 80,
             ]);
             $lightboxSrc = $lightboxThumb->url();
         } catch (Throwable $e) {
-            // fallback to original
+            // fallback to original if thumb generation fails
             $lightboxSrc = $imageFile->url();
         }
     }

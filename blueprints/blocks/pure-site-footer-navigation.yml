@@ -3,9 +3,33 @@ icon: menu
 preview: pure-footer
 
 fields:
-  items:
-    label: Items
-    extends: fields/links
+  direction:
+    type: select
+    label: Direction
+    default: row
+    required: true
+    empty: false
+    width: 1/2
+    options:
+      row: Row
+      column: Column
+
+  gap:
+    label: Gap
+    extends: fields/gap
+    default: s
+    width: 1/2
+
+  columns:
+    type: structure
+    label: Columns
+    fields:
+      title:
+        type: text
+        label: Title
+      items:
+        label: Items
+        extends: fields/links
 
   anchor:
     extends: fields/anchor

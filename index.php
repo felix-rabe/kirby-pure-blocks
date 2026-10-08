@@ -15,6 +15,9 @@ Kirby::plugin('kirbypure/blocks', [
         'blocks/pure-image' =>
             __DIR__ . '/blueprints/blocks/pure-image.yml',
 
+        'blocks/pure-button' =>
+            __DIR__ . '/blueprints/blocks/pure-button.yml',
+
         'blocks/pure-flexible-text' =>
             __DIR__ . '/blueprints/blocks/pure-flexible-text.yml',
 
@@ -100,6 +103,9 @@ Kirby::plugin('kirbypure/blocks', [
         'blocks/pure-image' =>
             __DIR__ . '/snippets/blocks/pure-image.php',
 
+        'blocks/pure-button' =>
+            __DIR__ . '/snippets/blocks/pure-button.php',
+
         'blocks/pure-flexible-text' =>
             __DIR__ . '/snippets/blocks/pure-flexible-text.php',
 
@@ -131,6 +137,9 @@ Kirby::plugin('kirbypure/blocks', [
 
         'organizer/thumbnail' =>
             __DIR__ . '/snippets/organizer/thumbnail.php',
+
+        'organizer/grid' =>
+            __DIR__ . '/snippets/organizer/grid.php',
 
         // Render helpers
         'render/pure-image' =>
@@ -220,7 +229,7 @@ Kirby::plugin('kirbypure/blocks', [
                 '/media/plugins/kirbypure/blocks/js/pure-navigation.js',
                 '/media/plugins/kirbypure/blocks/js/pure-header-height.js',
                 '/media/plugins/kirbypure/blocks/js/pure-organizer.js',
-                '/media/plugins/kirbypure/blocks/js/pure-parvus.js',
+                '/media/plugins/kirbypure/blocks/js/pure-parvus-video.js',
                 '/media/plugins/kirbypure/blocks/js/pure-swiper.js',
                 '/media/plugins/kirbypure/blocks/js/pure-video.js',
             ];
@@ -340,6 +349,10 @@ Kirby::plugin('kirbypure/blocks', [
                                 'trim',
                                 explode(',', (string)$page->tags())
                             )));
+                            $groups = array_values(array_filter(array_map(
+                                'trim',
+                                explode(',', (string)$page->groups())
+                            )));
 
                             $thumbnail = null;
 
@@ -420,6 +433,8 @@ Kirby::plugin('kirbypure/blocks', [
                                             'external' => $externalUrl ?: null,
                                             'width'    => $content->get('width')->toInt(),
                                             'height'   => $content->get('height')->toInt(),
+                                            'objectFit' => $content->get('objectFit')->or('contain')->value(),
+                                            'objectPosition' => $content->get('objectPosition')->or('center center')->value(),
                                             'corners'  => $content->get('corners')->value(),
                                         ];
 
@@ -468,6 +483,7 @@ Kirby::plugin('kirbypure/blocks', [
                                 'date'           => $page->date()->value(),
                                 'year'           => $year,
                                 'tags'           => $tags,
+                                'groups'         => $groups,
                             ];
                         })
                         ->values();

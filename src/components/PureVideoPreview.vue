@@ -29,6 +29,7 @@
         <video
         v-if="video.url"
         class="pure-video-preview__media"
+        :style="mediaStyle"
         :src="video.url"
         :poster="poster.url || null"
         :autoplay="autoplay"
@@ -42,6 +43,7 @@
         <img
           v-else-if="poster.url"
           class="pure-video-preview__poster"
+          :style="mediaStyle"
           :src="poster.url"
           alt=""
         >
@@ -100,6 +102,10 @@ export default {
       return this.toBool(this.content.controls, false);
     },
 
+    activateLightbox() {
+      return this.toBool(this.content.activatelightbox, false);
+    },
+
     indicators() {
     const indicators = [];
 
@@ -117,6 +123,10 @@ export default {
 
     if (this.controls && !this.isExternal) {
         indicators.push("Controls");
+    }
+
+    if (this.activateLightbox && !this.isExternal) {
+        indicators.push("Lightbox");
     }
 
     return indicators;
@@ -140,6 +150,23 @@ export default {
       }
 
       return {};
+    },
+
+    mediaStyle() {
+      const allowedFits = ["contain", "cover", "fill", "none", "scale-down"];
+      const allowedPositions = [
+        "left top", "center top", "right top",
+        "left center", "center center", "right center",
+        "left bottom", "center bottom", "right bottom",
+      ];
+      const objectFit = allowedFits.includes(this.content.objectfit)
+        ? this.content.objectfit
+        : "contain";
+      const objectPosition = allowedPositions.includes(this.content.objectposition)
+        ? this.content.objectposition
+        : "center center";
+
+      return { objectFit, objectPosition };
     },
 
     captionStyle() {

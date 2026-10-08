@@ -28,6 +28,19 @@ figure.pure-video figcaption {
     height: 100%;
 }
 
+/* Keep the ThumbHash placeholder in the same rendered crop box as the final image. */
+.pure-image picture {
+    display: block;
+    width: 100%;
+    aspect-ratio: var(--pure-image-ratio);
+    overflow: hidden;
+}
+
+.pure-image picture > img {
+    width: 100%;
+    height: 100%;
+}
+
 .pure-video-wrapper {
     position: relative;
     width: 100%;

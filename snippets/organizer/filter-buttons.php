@@ -4,6 +4,7 @@
  */
 
 $enabled           = isset($enabled) ? (bool)$enabled : false;
+$groupEnabled      = isset($groupEnabled) ? (bool)$groupEnabled : false;
 $dateEnabled       = isset($dateEnabled) ? (bool)$dateEnabled : false;
 $multiSelect       = isset($multiSelect) ? (bool)$multiSelect : false;
 $enableItemScaler  = isset($enableItemScaler) ? (bool)$enableItemScaler : false;
@@ -20,18 +21,26 @@ $isSticky          = isset($isSticky) ? (bool)$isSticky : false;
 $stickyTop         = isset($stickyTop) ? (string)$stickyTop : 'none';
 
 // Exit only if there is truly nothing to render
-if ((!$enabled && !$dateEnabled && !$enableItemScaler) || !$items || $scopeClass === '' || $itemSelector === '') {
+if ((!$enabled && !$groupEnabled && !$dateEnabled && !$enableItemScaler) || !$items || $scopeClass === '' || $itemSelector === '') {
     return;
 }
 
-$allTags  = [];
-$allYears = [];
+$allTags   = [];
+$allGroups = [];
+$allYears  = [];
 
 foreach ($items as $p) {
     if ($enabled) {
         foreach (fieldTags($p, 'tags') as $t) {
             $t = trim((string)$t);
             if ($t !== '') $allTags[] = $t;
+        }
+    }
+
+    if ($groupEnabled) {
+        foreach (fieldTags($p, 'groups') as $g) {
+            $g = trim((string)$g);
+            if ($g !== '') $allGroups[] = $g;
         }
     }
 
@@ -46,10 +55,12 @@ foreach ($items as $p) {
     }
 }
 
-$tags  = array_values(array_unique($allTags));
-$years = array_values(array_unique($allYears));
+$tags   = array_values(array_unique($allTags));
+$groups = array_values(array_unique($allGroups));
+$years  = array_values(array_unique($allYears));
 
 sort($tags, SORT_NATURAL | SORT_FLAG_CASE);
+sort($groups, SORT_NATURAL | SORT_FLAG_CASE);
 rsort($years, SORT_NATURAL);
 
 $uid = 'fb-' . substr(md5($scopeClass . $buttonsClass . $itemSelector . microtime(true)), 0, 10);
@@ -78,7 +89,7 @@ $wrapperClasses = classList([
          <?= pureOnScrollAttribute() ?>
     >
 
-  <?php if ($enabled || $dateEnabled): ?>
+  <?php if ($enabled || $groupEnabled || $dateEnabled): ?>
     <button type="button" class="btn filter-btn filter-btn-all active" data-type="all" data-value="*" aria-pressed="true">
       <?= htmlspecialchars($labelAll, ENT_QUOTES, 'UTF-8') ?>
     </button>
@@ -94,6 +105,20 @@ $wrapperClasses = classList([
               data-label="<?= htmlspecialchars($tag, ENT_QUOTES, 'UTF-8') ?>"
               aria-pressed="false">
         <?= htmlspecialchars($tag, ENT_QUOTES, 'UTF-8') ?>
+      </button>
+    <?php endforeach ?>
+  <?php endif ?>
+
+  <?php if ($groupEnabled): ?>
+    <?php foreach ($groups as $group): ?>
+      <?php $slug = str_replace(' ', '-', strtolower($group)); ?>
+      <button type="button"
+              class="btn filter-btn filter-btn-group"
+              data-type="group"
+              data-value="<?= $slug ?>"
+              data-label="<?= htmlspecialchars($group, ENT_QUOTES, 'UTF-8') ?>"
+              aria-pressed="false">
+        <?= htmlspecialchars($group, ENT_QUOTES, 'UTF-8') ?>
       </button>
     <?php endforeach ?>
   <?php endif ?>
@@ -125,14 +150,16 @@ document.addEventListener('DOMContentLoaded', function () {
 
   const cfg = JSON.parse(root.dataset.filterConfig);
   const scope = root.closest('.' + cfg.scopeClass) || document;
-  const gridElement = scope.querySelector('.pure-organizer');
-  if (!gridElement) return;
+  const gridElements = Array.from(scope.querySelectorAll('.pure-organizer'));
+  if (!gridElements.length) return;
 
-  const items = Array.from(gridElement.querySelectorAll(cfg.itemSelector));
+  const items = gridElements.flatMap(gridElement =>
+    Array.from(gridElement.querySelectorAll(cfg.itemSelector))
+  );
   const allButton = root.querySelector('.filter-btn-all');
   const emptyMessage = scope.querySelector('.pure-organizer-filter-empty');
 
-  let activeFilters = { tag: [], year: [] };
+  let activeFilters = { tag: [], group: [], year: [] };
 
   function sortByVisualPosition(a, b) {
     const rectA = a.getBoundingClientRect();
@@ -151,11 +178,16 @@ document.addEventListener('DOMContentLoaded', function () {
     const visibleClass = 'visible';
 
     const shown = items.filter(item => {
-      if (activeFilters.tag.length === 0 && activeFilters.year.length === 0) return true;
+      if (activeFilters.tag.length === 0 && activeFilters.group.length === 0 && activeFilters.year.length === 0) return true;
 
       const itemTags = (item.getAttribute('data-tags') || '')
         .split(',')
         .map(t => t.trim().toLowerCase())
+        .filter(Boolean);
+
+      const itemGroups = (item.getAttribute('data-groups') || '')
+        .split(',')
+        .map(g => g.trim().toLowerCase())
         .filter(Boolean);
 
       const itemYear = (item.getAttribute('data-year') || '').trim();
@@ -166,17 +198,23 @@ document.addEventListener('DOMContentLoaded', function () {
           itemTags.includes(f.replace(/-/g, ' '))
         );
 
+      const matchesGroup = activeFilters.group.length === 0 ||
+        activeFilters.group.some(f =>
+          item.classList.contains('group-' + f) ||
+          itemGroups.includes(f.replace(/-/g, ' '))
+        );
+
       const matchesYear = activeFilters.year.length === 0 ||
         activeFilters.year.some(f =>
           item.classList.contains('year-' + f) ||
           itemYear === f
         );
 
-      return matchesTag && matchesYear;
+      return matchesTag && matchesGroup && matchesYear;
     });
 
     const hasActiveFilter =
-      activeFilters.tag.length > 0 || activeFilters.year.length > 0;
+      activeFilters.tag.length > 0 || activeFilters.group.length > 0 || activeFilters.year.length > 0;
 
     if (emptyMessage) {
       const showEmpty = hasActiveFilter && shown.length === 0;
@@ -202,7 +240,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     if (window.PureOrganizer) {
-      window.PureOrganizer.relayout(gridElement);
+      gridElements.forEach(gridElement => window.PureOrganizer.relayout(gridElement));
     }
 
     if (window.updateFirstVisibleClass) {
@@ -229,7 +267,7 @@ document.addEventListener('DOMContentLoaded', function () {
         el.style.transform = 'translateY(16px)';
       });
 
-      gridElement.offsetHeight;
+      gridElements.forEach(gridElement => gridElement.offsetHeight);
 
       requestAnimationFrame(() => {
         toAnimate.forEach((el, i) => {
@@ -241,7 +279,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 
         if (window.PureOrganizer) {
-          window.PureOrganizer.relayout(gridElement);
+          gridElements.forEach(gridElement => window.PureOrganizer.relayout(gridElement));
         }
       });
     }
@@ -272,6 +310,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     if (type === 'all') {
       activeFilters.tag = [];
+      activeFilters.group = [];
       activeFilters.year = [];
     } else {
       const idx = activeFilters[type].indexOf(val);
@@ -287,7 +326,7 @@ document.addEventListener('DOMContentLoaded', function () {
     if (allButton) {
       allButton.classList.toggle(
         'active',
-        activeFilters.tag.length === 0 && activeFilters.year.length === 0
+        activeFilters.tag.length === 0 && activeFilters.group.length === 0 && activeFilters.year.length === 0
       );
     }
 

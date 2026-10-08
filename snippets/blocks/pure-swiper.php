@@ -94,7 +94,7 @@ $bool = static fn (bool $value): string => $value ? 'true' : 'false';
                 ? $file->focus()->value()
                 : 'center';
 
-            $ratio = $aspectRatio !== 'auto'
+            $ratio = !in_array($aspectRatio, ['auto', 'fullscreen'], true)
                 ? $aspectRatio
                 : null;
 

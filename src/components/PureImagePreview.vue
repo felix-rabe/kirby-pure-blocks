@@ -26,6 +26,7 @@
           v-if="image.url"
           :src="previewUrl || image.url"
           :alt="content.alt || ''"
+          :class="imageClasses"
           :style="imageStyle"
         >
       </div>
@@ -83,10 +84,14 @@ export default {
 
     frameClasses() {
       return {
+        'has-border': this.content.border === true,
         'is-rounded': this.content.corners === 'rounded',
         'is-circle': this.content.corners === 'circle',
-        'has-border': this.content.border === true,
       };
+    },
+
+    imageClasses() {
+      return {};
     },
 
     frameStyle() {

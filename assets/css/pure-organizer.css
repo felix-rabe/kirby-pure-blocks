@@ -6,7 +6,8 @@
     --scale: 1;
     position: relative;
     width: 100%;
-    gap: var(--organizer-gap, 0px);
+    row-gap: var(--organizer-row-gap, 0px);
+    column-gap: var(--organizer-column-gap, 0px);
 }
 
 .pure-organizer .pure-organizer-item,
@@ -28,13 +29,55 @@
     .pure-organizer {
         display: grid;
         grid-template-columns: 1fr;
-        gap: var(--organizer-gap, 0px);
+        row-gap: var(--organizer-row-gap, 0px);
+    column-gap: var(--organizer-column-gap, 0px);
         height: auto !important;
     }
 }
 
 @media screen and (min-width: 992px) {
-    .pure-organizer .pure-organizer-item {
+    /*
+     * CSS-first organizer geometry.
+     *
+     * Before pure-organizer.js has arrived/executed (e.g. under heavy network
+     * throttling), keep items in a 12-column flow using the same span values
+     * that the JS layout consumes. This prevents the temporary 100%-wide stack
+     * and gives lazy-loading a realistic initial document geometry.
+     *
+     * As soon as JS runs it writes absolute position/width inline and adds
+     * .is-layout-ready; from that point the normal Organizer layout takes over.
+     */
+    .pure-organizer:not(.is-layout-ready) {
+        display: grid;
+        grid-template-columns: repeat(12, minmax(0, 1fr));
+        align-items: start;
+    }
+
+    .pure-organizer:not(.is-layout-ready) .pure-organizer-item {
+        position: relative;
+        width: auto;
+        margin: 0;
+        grid-column: span 12;
+    }
+
+    .pure-organizer:not(.is-layout-ready) .pure-organizer-item[data-span="1"]  { grid-column: span 1; }
+    .pure-organizer:not(.is-layout-ready) .pure-organizer-item[data-span="2"]  { grid-column: span 2; }
+    .pure-organizer:not(.is-layout-ready) .pure-organizer-item[data-span="3"]  { grid-column: span 3; }
+    .pure-organizer:not(.is-layout-ready) .pure-organizer-item[data-span="4"]  { grid-column: span 4; }
+    .pure-organizer:not(.is-layout-ready) .pure-organizer-item[data-span="5"]  { grid-column: span 5; }
+    .pure-organizer:not(.is-layout-ready) .pure-organizer-item[data-span="6"]  { grid-column: span 6; }
+    .pure-organizer:not(.is-layout-ready) .pure-organizer-item[data-span="7"]  { grid-column: span 7; }
+    .pure-organizer:not(.is-layout-ready) .pure-organizer-item[data-span="8"]  { grid-column: span 8; }
+    .pure-organizer:not(.is-layout-ready) .pure-organizer-item[data-span="9"]  { grid-column: span 9; }
+    .pure-organizer:not(.is-layout-ready) .pure-organizer-item[data-span="10"] { grid-column: span 10; }
+    .pure-organizer:not(.is-layout-ready) .pure-organizer-item[data-span="11"] { grid-column: span 11; }
+    .pure-organizer:not(.is-layout-ready) .pure-organizer-item[data-span="12"] { grid-column: span 12; }
+
+    .pure-organizer.is-layout-ready {
+        display: block;
+    }
+
+    .pure-organizer.is-layout-ready .pure-organizer-item {
         position: absolute;
         margin: 0;
     }
@@ -160,10 +203,8 @@ div.btn {
 }
 
 /* Organizer metadata uses the button appearance as a passive label only. */
-.meta-wrapper .btn {
+.pure-organizer .tag {
     pointer-events: none;
-    cursor: default;
-    transition: none;
 }
 
 
@@ -310,8 +351,25 @@ div.btn {
     padding: var(--size-xxs);
 }
 
+/* When a thumbnail starts with text/content, tags participate in the normal
+   document flow instead of covering the first block. */
+.meta-wrapper--flow {
+    position: relative;
+    top: auto;
+    left: auto;
+    width: 100%;
+    padding-top: 0;
+    padding-inline: 0;
+}
+
 .meta-infos-wrapper {
     display: flex;
     flex-wrap: wrap;
     gap: var(--size-xxs);
+}
+
+.meta-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--size-xxs);
 }

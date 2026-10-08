@@ -33,8 +33,8 @@
         v-else-if="visibleItems.length"
         ref="grid"
         class="pure-organizer-preview__grid"
-        :class="`is-${displayMode}`"
-        :style="{ gap: previewGap }"
+:class="[`is-${displayMode}`, `is-width-${widthMode}`]"
+        :style="gridStyle"
       >
         <article
           v-for="item in visibleItems"
@@ -59,6 +59,7 @@
 
             <video
               v-else-if="thumbnailType(item.thumbnail) === 'video' && item.thumbnail.url"
+              :style="thumbnailImageStyle(item.thumbnail)"
               :src="item.thumbnail.url"
               :poster="item.thumbnail.poster || null"
               muted
@@ -71,6 +72,7 @@
 
             <img
               v-else-if="thumbnailType(item.thumbnail) === 'video' && item.thumbnail.poster"
+              :style="thumbnailImageStyle(item.thumbnail)"
               :src="item.thumbnail.poster"
               alt=""
               @load="scheduleLayout"
@@ -118,10 +120,13 @@
 </template>
 
 <script>
+import { previewSpace } from "../previewTokens.js";
+
 export default {
   data() {
     return {
       items: [],
+      previewWidth: 0,
       loading: true,
       error: null,
       resizeObserver: null,
@@ -153,33 +158,65 @@ export default {
         : "grid";
     },
 
+    widthMode() {
+      const raw = this.content.widthmode ?? this.content.widthMode ?? "span";
+      const value = typeof raw === "object"
+        ? (raw.value ?? raw.id ?? raw.text ?? "span")
+        : raw;
 
-    gap() {
-      const raw = this.content.gap ?? "s";
+      const normalized = String(value).toLowerCase();
+      if (normalized.includes("min")) return "minmax";
+      return "span";
+    },
+
+
+    rowGap() {
+      const raw = this.content.rowgap ?? this.content.rowGap ?? this.content.gap ?? "s";
       return typeof raw === "object"
         ? (raw.value ?? raw.id ?? raw.text ?? "s")
         : String(raw);
     },
 
-    previewGap() {
-      const gaps = {
-        none: "0px",
-        xxs: "0.375rem",
-        xs: "0.75rem",
-        s: "1rem",
-        m: "1.625rem",
-        l: "2.625rem",
-        xl: "4.25rem",
-        xxl: "4.25rem",
-        "3xl": "6.875rem",
-        "4xl": "11rem",
-      };
+    columnGap() {
+      const raw = this.content.columngap ?? this.content.columnGap ?? this.content.gap ?? "s";
+      return typeof raw === "object"
+        ? (raw.value ?? raw.id ?? raw.text ?? "s")
+        : String(raw);
+    },
 
-      return gaps[this.gap] || gaps.s;
+    previewRowGap() {
+      return previewSpace(this.rowGap, "s");
+    },
+
+    previewColumnGap() {
+      return previewSpace(this.columnGap, "s");
+    },
+
+    gridStyle() {
+      // Panel preview is intentionally simplified: always four equal columns.
+      // Width Mode remains visible as an indicator, but does not affect preview geometry.
+      if (this.displayMode === "masonry") {
+        return {
+          display: "block",
+          position: "relative",
+        };
+      }
+
+      return {
+        display: "grid",
+        gridTemplateColumns: "repeat(4, minmax(0, 1fr))",
+        alignItems: "start",
+        rowGap: this.previewRowGap,
+        columnGap: this.previewColumnGap,
+      };
     },
 
     tagFilter() {
       return this.toBool(this.content.tagfilter, false);
+    },
+
+    groupFilter() {
+      return this.toBool(this.content.groupfilter, false);
     },
 
     dateFilter() {
@@ -202,18 +239,27 @@ export default {
       return this.toBool(this.content.showtags, false);
     },
 
+    showGroups() {
+      return this.toBool(this.content.showgroups, false);
+    },
+
     showPageTitle() {
       return this.toBool(this.content.showpagetitle, false);
     },
 
     indicators() {
-      const indicators = [this.displayMode === "masonry" ? "Masonry" : "Grid"];
+      const indicators = [
+        this.displayMode === "masonry" ? "Masonry" : "Grid",
+        this.widthMode === "minmax" ? "Min–Max Width" : "Span Width",
+      ];
       if (this.tagFilter) indicators.push("Tag Filter");
+      if (this.groupFilter) indicators.push("Group Filter");
       if (this.dateFilter) indicators.push("Date Filter");
       if (this.filterMulti) indicators.push("Multi-select");
       if (this.filterSticky) indicators.push("Sticky Filter");
       if (this.itemScaler) indicators.push("Scaler");
       if (this.showTags) indicators.push("Tags");
+      if (this.showGroups) indicators.push("Groups");
       if (this.showPageTitle) indicators.push("Page Title");
       return indicators;
     },
@@ -221,10 +267,17 @@ export default {
     prefilteredItems() {
       let items = [...this.items];
       const tags = this.normalizeTags(this.content.filterbytags);
+      const groups = this.normalizeTags(this.content.filterbygroups);
 
       if (tags.length) {
         items = items.filter((item) =>
-          item.tags.some((tag) => tags.includes(tag))
+          (item.tags || []).some((tag) => tags.includes(tag))
+        );
+      }
+
+      if (groups.length) {
+        items = items.filter((item) =>
+          (item.groups || []).some((group) => groups.includes(group))
         );
       }
 
@@ -254,7 +307,11 @@ export default {
       this.scheduleLayout();
     },
 
-    gap() {
+    rowGap() {
+      this.scheduleLayout();
+    },
+
+    columnGap() {
       this.scheduleLayout();
     },
 
@@ -264,7 +321,10 @@ export default {
   },
 
   mounted() {
-    this.resizeObserver = new ResizeObserver(() => this.scheduleLayout());
+    this.resizeObserver = new ResizeObserver(([entry]) => {
+      this.previewWidth = entry?.contentRect?.width || this.$refs.preview?.clientWidth || 0;
+      this.scheduleLayout();
+    });
     if (this.$refs.preview) {
       this.resizeObserver.observe(this.$refs.preview);
     }
@@ -331,12 +391,10 @@ export default {
       return Math.max(1, Math.min(12, Number(item.thumbnailWidth || 6)));
     },
 
-    itemStyle(item) {
-      if (this.displayMode === "masonry") return {};
-
-      return {
-        gridColumn: `span ${this.itemSpan(item)}`,
-      };
+    itemStyle() {
+      // Width settings are deliberately ignored in the Panel preview.
+      // The preview always uses four equal columns for a stable overview.
+      return {};
     },
 
     organizerElements() {
@@ -376,50 +434,43 @@ export default {
       const containerWidth = grid.clientWidth;
       if (!containerWidth) return;
 
-      const styles = getComputedStyle(grid);
-      const parsedGutter = Number.parseFloat(styles.columnGap || styles.gap);
-      const gutter = Number.isFinite(parsedGutter) ? parsedGutter : 12;
-      const columnWidth = (containerWidth - (11 * gutter)) / 12;
-      const step = columnWidth + gutter;
-      const columnBottoms = new Array(12).fill(0);
+      // Masonry is absolutely positioned, so CSS gap does not lay items out for us.
+      // Convert the preview gap lengths (including rem values such as XL) to px
+      // and use those exact values in the masonry coordinates.
+      const toPixels = (value) => {
+        const text = String(value || "0").trim();
+        const number = Number.parseFloat(text);
+        if (!Number.isFinite(number)) return 0;
+        if (text.endsWith("rem")) {
+          const rootSize = Number.parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
+          return number * rootSize;
+        }
+        return number;
+      };
+      const gutterX = toPixels(this.previewColumnGap);
+      const gutterY = toPixels(this.previewRowGap);
 
-      elements.forEach((element, index) => {
-        const item = this.visibleItems[index];
-        if (!item) return;
+      const columns = 4;
+      const width = Math.max(0, (containerWidth - gutterX * (columns - 1)) / columns);
+      const step = width + gutterX;
+      const bottoms = new Array(columns).fill(0);
 
-        const span = this.itemSpan(item);
-        const width = (columnWidth * span) + (gutter * Math.max(0, span - 1));
+      elements.forEach((element) => {
+        let column = 0;
+        for (let i = 1; i < columns; i++) {
+          if (bottoms[i] < bottoms[column]) column = i;
+        }
 
         element.style.position = "absolute";
         element.style.width = `${width}px`;
-        element.style.left = "0";
-        element.style.top = "0";
+        element.style.left = `${column * step}px`;
+        element.style.top = `${bottoms[column]}px`;
 
         const height = element.getBoundingClientRect().height;
-        let bestColumn = 0;
-        let bestY = Infinity;
-
-        for (let start = 0; start <= 12 - span; start++) {
-          const y = Math.max(...columnBottoms.slice(start, start + span));
-          if (y < bestY) {
-            bestY = y;
-            bestColumn = start;
-          }
-        }
-
-        const x = bestColumn * step;
-        const y = Number.isFinite(bestY) ? bestY : 0;
-        const bottom = y + height + gutter;
-
-        element.style.left = `${x}px`;
-        element.style.top = `${y}px`;
-
-        for (let column = bestColumn; column < bestColumn + span; column++) {
-          columnBottoms[column] = bottom;
-        }
+        bottoms[column] += height + gutterY;
       });
 
-      const height = Math.max(0, ...columnBottoms) - gutter;
+      const height = Math.max(0, ...bottoms) - gutterY;
       grid.style.height = `${Math.max(0, height)}px`;
     },
 
