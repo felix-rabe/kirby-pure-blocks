@@ -213,25 +213,31 @@ $renderVideo = function (string $extraClass = '') use (
     <!-- Parvus adds its native zoom indicator only when the trigger contains an img.
          Keep this tiny helper image in the trigger so video gets the exact same UI. -->
     <img class="pure-video__parvus-helper" src="<?= htmlspecialchars($lightboxPlaceholder, ENT_QUOTES, 'UTF-8') ?>" alt="" aria-hidden="true">
-    <?php $renderVideo(); ?>
+    <div class="pure-video__media-container" style="position:relative;width:100%;overflow:hidden;">
+      <?php $renderVideo(); ?>
+      <?php if ($thumbhashSvgUri): ?><img src="<?= htmlspecialchars($thumbhashSvgUri, ENT_QUOTES, 'UTF-8') ?>" class="pseudo-thumbhash <?= htmlspecialchars($cornerClass, ENT_QUOTES, 'UTF-8') ?>" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:<?= htmlspecialchars($objectPosition, ENT_QUOTES, 'UTF-8') ?>;" alt=""><?php endif ?>
+    </div>
   </a>
   <?php if ($captionContent): ?><figcaption class="<?= htmlspecialchars($captionClasses, ENT_QUOTES, 'UTF-8') ?>"><?= $captionContent ?></figcaption><?php endif ?>
-  <?php if ($thumbhashSvgUri): ?><img src="<?= htmlspecialchars($thumbhashSvgUri, ENT_QUOTES, 'UTF-8') ?>" class="pseudo-thumbhash <?= htmlspecialchars($cornerClass, ENT_QUOTES, 'UTF-8') ?>" style="<?= htmlspecialchars($aspectRatioStyle . 'width:100%;height:100%;object-fit:' . $objectFit . ';object-position:' . $objectPosition . ';', ENT_QUOTES, 'UTF-8') ?>" alt=""><?php endif ?>
 </figure>
 
 <!-- Mobile: no lightbox, exactly like pure-image's mobile branch -->
 <figure class="<?= htmlspecialchars($figureClasses, ENT_QUOTES, 'UTF-8') ?> pure-video-mobile" <?= pureOnScrollAttribute($onScrollTransition) ?>>
-  <?php $renderVideo(); ?>
+  <div class="pure-video__media-container" style="position:relative;width:100%;overflow:hidden;">
+    <?php $renderVideo(); ?>
+    <?php if ($thumbhashSvgUri): ?><img src="<?= htmlspecialchars($thumbhashSvgUri, ENT_QUOTES, 'UTF-8') ?>" class="pseudo-thumbhash <?= htmlspecialchars($cornerClass, ENT_QUOTES, 'UTF-8') ?>" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:<?= htmlspecialchars($objectPosition, ENT_QUOTES, 'UTF-8') ?>;" alt=""><?php endif ?>
+  </div>
   <?php if ($captionContent): ?><figcaption class="<?= htmlspecialchars($captionClasses, ENT_QUOTES, 'UTF-8') ?>"><?= $captionContent ?></figcaption><?php endif ?>
-  <?php if ($thumbhashSvgUri): ?><img src="<?= htmlspecialchars($thumbhashSvgUri, ENT_QUOTES, 'UTF-8') ?>" class="pseudo-thumbhash <?= htmlspecialchars($cornerClass, ENT_QUOTES, 'UTF-8') ?>" style="<?= htmlspecialchars($aspectRatioStyle . 'width:100%;height:100%;object-fit:' . $objectFit . ';object-position:' . $objectPosition . ';', ENT_QUOTES, 'UTF-8') ?>" alt=""><?php endif ?>
 </figure>
 
 <?php else: ?>
 <figure class="<?= htmlspecialchars($figureClasses, ENT_QUOTES, 'UTF-8') ?>" <?= pureOnScrollAttribute($onScrollTransition) ?>>
   <?= $linkOpen ?>
-  <?php $renderVideo(); ?>
+  <div class="pure-video__media-container" style="position:relative;width:100%;overflow:hidden;">
+    <?php $renderVideo(); ?>
+    <?php if ($thumbhashSvgUri): ?><img src="<?= htmlspecialchars($thumbhashSvgUri, ENT_QUOTES, 'UTF-8') ?>" class="pseudo-thumbhash <?= htmlspecialchars($cornerClass, ENT_QUOTES, 'UTF-8') ?>" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:<?= htmlspecialchars($objectPosition, ENT_QUOTES, 'UTF-8') ?>;" alt=""><?php endif ?>
+  </div>
   <?= $linkClose ?>
   <?php if ($captionContent): ?><figcaption class="<?= htmlspecialchars($captionClasses, ENT_QUOTES, 'UTF-8') ?>"><?= $captionContent ?></figcaption><?php endif ?>
-  <?php if ($thumbhashSvgUri): ?><img src="<?= htmlspecialchars($thumbhashSvgUri, ENT_QUOTES, 'UTF-8') ?>" class="pseudo-thumbhash <?= htmlspecialchars($cornerClass, ENT_QUOTES, 'UTF-8') ?>" style="<?= htmlspecialchars($aspectRatioStyle . 'width:100%;height:100%;object-fit:' . $objectFit . ';object-position:' . $objectPosition . ';', ENT_QUOTES, 'UTF-8') ?>" alt=""><?php endif ?>
 </figure>
 <?php endif ?>
