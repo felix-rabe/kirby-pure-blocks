@@ -83,6 +83,7 @@ if ($imageFile):
     : [$size]; // fast single-size fallback
     $webpSrcset = '';
     $jpegSrcset = '';
+    $responsiveImages = site()->generateThumbs()->toBool();
 
     // Thumbhash placeholder
     if (!$isSvg) {
@@ -92,52 +93,45 @@ if ($imageFile):
         }
     }
 
-    // Generate thumbnails for raster images (JPG/PNG)
+    // WebP is optional; JPEG is always available.
+    $webpEnabled = site()->webpEnabled()->toBool();
+
+    // JPEG is always generated; WebP is optional.
     if ($canGenerateThumbs) {
-        $thumbHeight = null;
-
-        // Apply ratio if set
-        // $wRatio/$hRatio were validated once above.
-
         try {
-            // Generate WebP srcset
-            foreach ($sizes as $thumbWidth) {
-                if ($ratio) {
-                    $thumbHeight = intval($thumbWidth * $hRatio / $wRatio);
+            if ($webpEnabled) {
+                foreach ($sizes as $thumbWidth) {
+                    $webpThumb = $imageFile->thumb([
+                        'width' => $thumbWidth,
+                        'height' => $ratio ? intval($thumbWidth * $hRatio / $wRatio) : null,
+                        'sharpen' => 25,
+                        'crop' => $crop,
+                        'format' => 'webp',
+                        'quality' => $quality ?? 75,
+                    ]);
+                    $webpSrcset .= $webpThumb->url() . ' ' . $webpThumb->width() . 'w, ';
                 }
-                $webpThumb = $imageFile->thumb([
-                    'width' => $thumbWidth,
-                    'height' => $thumbHeight,
-                    'sharpen' => 25,
-                    'crop' => $crop,
-                    'format' => 'webp',
-                    'quality' => $quality ?? 75
-                ]);
-                $webpSrcset .= $webpThumb->url() . ' ' . $webpThumb->width() . 'w, ';
+                $webpSrc = trim($webpSrcset, ', ');
             }
-            $webpSrc = trim($webpSrcset, ', ');
 
-            // Generate JPEG srcset and fallback
             foreach ($sizes as $thumbWidth) {
-                if ($ratio) {
-                    $thumbHeight = intval($thumbWidth * $hRatio / $wRatio);
+                    $jpegThumb = $imageFile->thumb([
+                        'width' => $thumbWidth,
+                        'height' => $ratio ? intval($thumbWidth * $hRatio / $wRatio) : null,
+                        'sharpen' => 25,
+                        'crop' => $crop,
+                        'format' => 'jpeg',
+                        'quality' => $quality ?? 80,
+                    ]);
+                    $jpegSrcset .= $jpegThumb->url() . ' ' . $jpegThumb->width() . 'w, ';
                 }
-                $jpegThumb = $imageFile->thumb([
-                    'width' => $thumbWidth,
-                    'height' => $thumbHeight,
-                    'sharpen' => 25,
-                    'crop' => $crop,
-                    'format' => 'jpeg',
-                    'quality' => $quality ?? 80
-                ]);
-                $jpegSrcset .= $jpegThumb->url() . ' ' . $jpegThumb->width() . 'w, ';
-            }
-            $dataSrc = trim($jpegSrcset, ', ');
-            $width = $imageFile->width();
-            $height = $imageFile->height();
+                // data-src must be one URL, never a srcset descriptor (e.g. ' 2400w').
+                $dataSrc = $jpegThumb->url();
+                $jpegSrcset = $responsiveImages ? trim($jpegSrcset, ', ') : '';
+
         } catch (Throwable $e) {
-            // fallback to original
-            $dataSrc = $imageFile->url();
+            $dataSrc = $src;
+            $jpegSrcset = '';
             $webpSrc = null;
         }
     }
@@ -184,7 +178,7 @@ if ($imageFile):
                 'height' => ($crop && $ratio) ? intval($lightboxWidth * $hRatio / $wRatio) : null,
                 'sharpen' => 25,
                 'crop' => $crop,
-                'format' => 'webp',
+                'format' => $webpEnabled ? 'webp' : 'jpeg',
                 'quality' => $quality ?? 80,
             ]);
             $lightboxSrc = $lightboxThumb->url();
@@ -217,12 +211,14 @@ if ($imageFile):
                     <source type="image/webp" data-srcset="<?= $webpSrc ?>" sizes="(min-width: 1200px) 1200px, (min-width: 800px) 800px, 100vw" />
                 <?php endif; ?>
                 <img class="<?= $imgClass ?>" src="<?= htmlspecialchars($initialSrc) ?>"
-                     data-src="<?= htmlspecialchars($dataSrc) ?>" alt="<?= htmlspecialchars($alt) ?>"
+                     data-src="<?= htmlspecialchars($dataSrc) ?>"
+                     <?php if ($jpegSrcset): ?>data-srcset="<?= htmlspecialchars($jpegSrcset) ?>" sizes="100vw"<?php endif; ?> alt="<?= htmlspecialchars($alt) ?>"
                      width="<?= $width ?>" height="<?= $height ?>" style="object-position: <?= $focus ?>;" loading="lazy" />
             </picture>
         <?php elseif ($isGif || $isSvg) : ?>
             <img class="<?= $imgClass ?>" src="<?= htmlspecialchars($initialSrc) ?>"
-                 data-src="<?= htmlspecialchars($dataSrc) ?>" alt="<?= htmlspecialchars($alt) ?>"
+                 data-src="<?= htmlspecialchars($dataSrc) ?>"
+                     <?php if ($jpegSrcset): ?>data-srcset="<?= htmlspecialchars($jpegSrcset) ?>" sizes="100vw"<?php endif; ?> alt="<?= htmlspecialchars($alt) ?>"
                  width="<?= $width ?>" height="<?= $height ?>" style="object-position: <?= $focus ?>;" loading="lazy" />
         <?php endif; ?>
     </a>
@@ -242,12 +238,14 @@ if ($imageFile):
                 <source type="image/webp" data-srcset="<?= $webpSrc ?>" sizes="(min-width: 1200px) 1200px, (min-width: 800px) 800px, 100vw" />
             <?php endif; ?>
             <img class="<?= $imgClass ?>" src="<?= htmlspecialchars($initialSrc) ?>"
-                 data-src="<?= htmlspecialchars($dataSrc) ?>" alt="<?= htmlspecialchars($alt) ?>"
+                 data-src="<?= htmlspecialchars($dataSrc) ?>"
+                     <?php if ($jpegSrcset): ?>data-srcset="<?= htmlspecialchars($jpegSrcset) ?>" sizes="100vw"<?php endif; ?> alt="<?= htmlspecialchars($alt) ?>"
                  width="<?= $width ?>" height="<?= $height ?>" style="object-position: <?= $focus ?>;" loading="lazy" />
         </picture>
     <?php elseif ($isGif || $isSvg) : ?>
         <img class="<?= $imgClass ?>" src="<?= htmlspecialchars($initialSrc) ?>"
-             data-src="<?= htmlspecialchars($dataSrc) ?>" alt="<?= htmlspecialchars($alt) ?>"
+             data-src="<?= htmlspecialchars($dataSrc) ?>"
+                     <?php if ($jpegSrcset): ?>data-srcset="<?= htmlspecialchars($jpegSrcset) ?>" sizes="100vw"<?php endif; ?> alt="<?= htmlspecialchars($alt) ?>"
              width="<?= $width ?>" height="<?= $height ?>" style="object-position: <?= $focus ?>;" loading="lazy" />
     <?php endif; ?>
 
@@ -277,12 +275,14 @@ if ($imageFile):
                     <source type="image/webp" data-srcset="<?= $webpSrc ?>" sizes="(min-width: 1200px) 1200px, (min-width: 800px) 800px, 100vw" />
                 <?php endif; ?>
                 <img class="<?= $imgClass ?>" src="<?= htmlspecialchars($initialSrc) ?>"
-                     data-src="<?= htmlspecialchars($dataSrc) ?>" alt="<?= htmlspecialchars($alt) ?>"
+                     data-src="<?= htmlspecialchars($dataSrc) ?>"
+                     <?php if ($jpegSrcset): ?>data-srcset="<?= htmlspecialchars($jpegSrcset) ?>" sizes="100vw"<?php endif; ?> alt="<?= htmlspecialchars($alt) ?>"
                      width="<?= $width ?>" height="<?= $height ?>" style="object-position: <?= $focus ?>;" loading="lazy" />
             </picture>
         <?php elseif ($isGif || $isSvg) : ?>
             <img class="<?= $imgClass ?>" src="<?= htmlspecialchars($initialSrc) ?>"
-                 data-src="<?= htmlspecialchars($dataSrc) ?>" alt="<?= htmlspecialchars($alt) ?>"
+                 data-src="<?= htmlspecialchars($dataSrc) ?>"
+                     <?php if ($jpegSrcset): ?>data-srcset="<?= htmlspecialchars($jpegSrcset) ?>" sizes="100vw"<?php endif; ?> alt="<?= htmlspecialchars($alt) ?>"
                  width="<?= $width ?>" height="<?= $height ?>" style="object-position: <?= $focus ?>;" loading="lazy" />
         <?php endif; ?>
     <?= $linkClose ?>

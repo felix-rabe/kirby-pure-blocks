@@ -133,7 +133,7 @@ sections:
       webpEnabled:
         type: toggle
         label: WebP
-        default: true
+        default: false
         width: 1/4
         help: A recommended modern image format with superior compression and performance.
 
