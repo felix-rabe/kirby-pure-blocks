@@ -58,6 +58,8 @@ $lightboxGroup ??= 'gallery';
 
 if ($imageFile):
     $extension = $imageFile->extension();
+    $isPng = strtolower($extension) === 'png';
+    $fallbackFormat = $isPng ? 'png' : 'jpeg';
     $isGif = $extension === 'gif';
     $isSvg = $extension === 'svg';
 
@@ -93,10 +95,10 @@ if ($imageFile):
         }
     }
 
-    // WebP is optional; JPEG is always available.
+    // WebP is optional; the fallback preserves PNG transparency.
     $webpEnabled = site()->webpEnabled()->toBool();
 
-    // JPEG is always generated; WebP is optional.
+    // Generate the original-compatible raster fallback; WebP is optional.
     if ($canGenerateThumbs) {
         try {
             if ($webpEnabled) {
@@ -120,7 +122,7 @@ if ($imageFile):
                         'height' => $ratio ? intval($thumbWidth * $hRatio / $wRatio) : null,
                         'sharpen' => 25,
                         'crop' => $crop,
-                        'format' => 'jpeg',
+                        'format' => $fallbackFormat,
                         'quality' => $quality ?? 80,
                     ]);
                     $jpegSrcset .= $jpegThumb->url() . ' ' . $jpegThumb->width() . 'w, ';
@@ -178,7 +180,7 @@ if ($imageFile):
                 'height' => ($crop && $ratio) ? intval($lightboxWidth * $hRatio / $wRatio) : null,
                 'sharpen' => 25,
                 'crop' => $crop,
-                'format' => $webpEnabled ? 'webp' : 'jpeg',
+                'format' => $webpEnabled ? 'webp' : $fallbackFormat,
                 'quality' => $quality ?? 80,
             ]);
             $lightboxSrc = $lightboxThumb->url();
