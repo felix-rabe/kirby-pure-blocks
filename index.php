@@ -180,21 +180,28 @@ Kirby::plugin('kirbypure/blocks', [
                 '/media/plugins/kirbypure/blocks/css/pure-swiper.css',
             ];
 
+            // Use original asset timestamps for cache busting, but keep Kirby media URLs.
+            $assetUrl = static function (string $path): string {
+                $relative = preg_replace('~^/media/plugins/kirbypure/blocks/~', '', $path);
+                $original = __DIR__ . '/assets/' . $relative;
+                $url = url(ltrim($path, '/'));
+
+                return is_file($original)
+                    ? $url . (str_contains($url, '?') ? '&' : '?') . 'v=' . filemtime($original)
+                    : $url;
+            };
+
             $vendorCss = '';
             $css = '';
 
             foreach ($vendorStylesheets as $path) {
-                $vendorCss .= class_exists('Bnomei\\Fingerprint')
-                    ? Bnomei\Fingerprint::css($path)
-                    : css($path);
+                $vendorCss .= css($assetUrl($path));
 
                 $vendorCss .= PHP_EOL;
             }
 
             foreach ($stylesheets as $path) {
-                $css .= class_exists('Bnomei\\Fingerprint')
-                    ? Bnomei\Fingerprint::css($path)
-                    : css($path);
+                $css .= css($assetUrl($path));
 
                 $css .= PHP_EOL;
             }
@@ -237,9 +244,7 @@ Kirby::plugin('kirbypure/blocks', [
             $js = '';
 
             foreach ($javascript as $path) {
-                $js .= class_exists('Bnomei\\Fingerprint')
-                    ? Bnomei\Fingerprint::js($path)
-                    : js($path);
+                $js .= js($assetUrl($path));
 
                 $js .= PHP_EOL;
             }
@@ -250,8 +255,8 @@ Kirby::plugin('kirbypure/blocks', [
              * Keep the original `defer init` behavior.
              * It is therefore loaded separately from the normal JS loop.
              */
-            $unlazyUrl = url(
-                'media/plugins/kirbypure/blocks/js/unlazy.with-hashing.iife.js'
+            $unlazyUrl = $assetUrl(
+                '/media/plugins/kirbypure/blocks/js/unlazy.with-hashing.iife.js'
             );
 
             $unlazy =
