@@ -180,14 +180,14 @@ Kirby::plugin('kirbypure/blocks', [
                 '/media/plugins/kirbypure/blocks/css/pure-swiper.css',
             ];
 
-            // Use original asset timestamps for cache busting, but keep Kirby media URLs.
+            // Use content hashes from original assets for cache busting; keep Kirby media URLs.
             $assetUrl = static function (string $path): string {
                 $relative = preg_replace('~^/media/plugins/kirbypure/blocks/~', '', $path);
                 $original = __DIR__ . '/assets/' . $relative;
                 $url = url(ltrim($path, '/'));
 
                 return is_file($original)
-                    ? $url . (str_contains($url, '?') ? '&' : '?') . 'v=' . filemtime($original)
+                    ? $url . (str_contains($url, '?') ? '&' : '?') . 'v=' . substr(hash_file('sha256', $original), 0, 12)
                     : $url;
             };
 
