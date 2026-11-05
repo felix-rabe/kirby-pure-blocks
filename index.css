@@ -588,3 +588,6 @@
   background-color: var(--pure-preview-btn-hover-background);
   border-color: var(--pure-preview-btn-hover-border);
 }
+
+.pure-spacer-preview { position: relative; }
+.pure-spacer-preview__anchor { position: absolute; top: 0; left: 0; z-index: 2; background: #fbd6f7; color: #111; border-radius: 999px; padding: 2px 8px; font-size: 12px; line-height: 1.3; }

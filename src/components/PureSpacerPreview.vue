@@ -3,6 +3,7 @@
     class="pure-spacer-preview"
     :style="{ height: previewHeight }"
   >
+    <span v-if="content?.anchor" class="pure-preview__indicator pure-spacer-preview__anchor">#{{ String(content.anchor).replace(/^#+/, "") }}</span>
     <span class="pure-spacer-preview__value">
       {{ size }}{{ unit }}
     </span>
