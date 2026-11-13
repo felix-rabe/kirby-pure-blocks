@@ -30,10 +30,13 @@
           <video
             v-if="isVideo(currentSlide)"
             class="pure-swiper-preview__media"
+            :key="`video-${activeIndex}-${currentSlide.url}`"
             :src="currentSlide.url"
+            autoplay
+            loop
             muted
             playsinline
-            preload="metadata"
+            preload="auto"
           />
           <img
             v-else
@@ -50,7 +53,9 @@
           aria-label="Previous slide"
           @click.stop="previous"
         >
-          ‹
+          <svg class="pure-swiper-preview__chevron" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false">
+            <path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
         </button>
 
         <button
@@ -60,20 +65,11 @@
           aria-label="Next slide"
           @click.stop="next"
         >
-          ›
+          <svg class="pure-swiper-preview__chevron" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false">
+            <path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
         </button>
 
-        <div
-          v-if="slides.length > 1"
-          class="pure-swiper-preview__pagination"
-        >
-          <span
-            v-for="(_, index) in slides"
-            :key="index"
-            class="pure-swiper-preview__dot"
-            :class="{ 'is-active': index === activeIndex }"
-          />
-        </div>
       </div>
 
       <figcaption
@@ -138,7 +134,7 @@ export default {
     },
 
     indicators() {
-    const indicators = [];
+    const indicators = [`${this.slides.length} ${this.slides.length === 1 ? "slide" : "slides"}`];
 
     if (this.content.effect && this.content.effect !== "slide") {
         indicators.push(this.content.effect);

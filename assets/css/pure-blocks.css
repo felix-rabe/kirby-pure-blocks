@@ -115,6 +115,9 @@ figure.pure-image.has-border {
    Flexible Text
 ---------------------------------------- */
 
-.pure-flexible-text {
+.pure-text {
     width: 100%;
-}
+}/* Alignment of the button within its block. */
+.pure-button-reveal.pure-button-align-left { text-align: left; }
+.pure-button-reveal.pure-button-align-center { text-align: center; }
+.pure-button-reveal.pure-button-align-right { text-align: right; }

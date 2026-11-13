@@ -14,7 +14,7 @@ fields:
       - pure-image
       - pure-video
       - pure-swiper
-      - pure-flexible-text
+      - pure-text
       - pure-spacer
       
   thumbnailWidth:

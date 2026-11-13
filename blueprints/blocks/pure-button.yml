@@ -31,3 +31,14 @@ fields:
       xxl: XXL
       3xl: 3XL
       4xl: 4XL
+
+  alignment:
+    label: Alignment
+    type: select
+    default: left
+    empty: false
+    width: 1/4
+    options:
+      left: Left
+      center: Center
+      right: Right

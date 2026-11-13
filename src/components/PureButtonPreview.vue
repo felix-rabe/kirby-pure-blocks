@@ -7,7 +7,7 @@
     @open="open"
     @update="update"
   >
-    <div class="pure-button-preview" :style="previewVariables">
+    <div class="pure-button-preview" :style="[previewVariables, { textAlign: buttonAlignment }]">
       <span class="pure-button-preview__button" :style="buttonStyle">
         {{ buttonText || 'Button' }}
       </span>
@@ -30,6 +30,11 @@ export default {
   computed: {
     buttonText() {
       return String(this.content?.text || '').trim();
+    },
+
+    buttonAlignment() {
+      const value = String(this.content?.alignment || 'left');
+      return ['left', 'center', 'right'].includes(value) ? value : 'left';
     },
 
     buttonStyle() {
@@ -154,7 +159,7 @@ export default {
 
 <style>
 .pure-button-preview {
-  padding: 0.5rem 0;
+  padding: 0;
 }
 
 .pure-button-preview__button {

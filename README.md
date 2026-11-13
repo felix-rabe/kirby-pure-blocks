@@ -6,7 +6,7 @@
 
 `Kirby Pure Blocks` extends `Kirby Pure` with a shared image, video and link rendering, and reusable reference-blocks.
 
-It includes image, video, swiper, flexible text, organizer and spacer blocks as well as basic header and footer navigation.
+It includes image, video, swiper, text, organizer and spacer blocks as well as basic header and footer navigation.
 
 ## Requirements
 
@@ -124,7 +124,7 @@ Pure Blocks can be made available throughout your project via your site's `confi
             'label' => 'Text',
             'type' => 'group',
             'fieldsets' => [
-                'pure-flexible-text',
+                'pure-text',
                 'pure-button',
             ],
         ],
@@ -147,7 +147,7 @@ fieldsets:
   - pure-image
   - pure-video
   - pure-swiper
-  - pure-flexible-text
+  - pure-text
   - pure-button
   - pure-organizer
   - pure-spacer

@@ -22,8 +22,8 @@ Kirby::plugin('kirbypure/blocks', [
         'blocks/pure-button' =>
             __DIR__ . '/blueprints/blocks/pure-button.yml',
 
-        'blocks/pure-flexible-text' =>
-            __DIR__ . '/blueprints/blocks/pure-flexible-text.yml',
+        'blocks/pure-text' =>
+            __DIR__ . '/blueprints/blocks/pure-text.yml',
 
         'blocks/pure-organizer' =>
             __DIR__ . '/blueprints/blocks/pure-organizer.yml',
@@ -110,8 +110,8 @@ Kirby::plugin('kirbypure/blocks', [
         'blocks/pure-button' =>
             __DIR__ . '/snippets/blocks/pure-button.php',
 
-        'blocks/pure-flexible-text' =>
-            __DIR__ . '/snippets/blocks/pure-flexible-text.php',
+        'blocks/pure-text' =>
+            __DIR__ . '/snippets/blocks/pure-text.php',
 
         'blocks/pure-organizer' =>
             __DIR__ . '/snippets/blocks/pure-organizer.php',
