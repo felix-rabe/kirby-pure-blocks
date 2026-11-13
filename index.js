@@ -6,6 +6,24 @@
       content: Object
     },
 
+    data() {
+      return { siteSizes: { mobile: 16, tablet: 16, desktop: 16 }, editorWidth: 0 };
+    },
+    mounted() {
+      this.loadSiteSizes();
+      this.$nextTick(() => {
+        const field = this.$el.closest('.k-blocks-field, .k-field[data-type="blocks"], .k-field');
+        this.previewContainer = (field && field.querySelector('.k-blocks-list, .k-blocks-empty, .k-blocks')) || field || this.$el;
+        this.widthObserver = new ResizeObserver(() => {
+          this.editorWidth = this.previewContainer.getBoundingClientRect().width;
+        });
+        this.widthObserver.observe(this.previewContainer);
+        this.editorWidth = this.previewContainer.getBoundingClientRect().width;
+      });
+    },
+    beforeDestroy() {
+      if (this.widthObserver) this.widthObserver.disconnect();
+    },
     computed: {
       selectedFontSize() {
         const size = String((this.content && this.content.fontsize) || "s").toLowerCase();
@@ -31,25 +49,32 @@
       },
 
       previewFontSize() {
+        const large = this.editorWidth >= 600;
         const sizes = {
-          xxs: 0.472,
-          xs: 0.764,
-          s: 1,
-          sm: 1.309,
-          m: 1.618,
-          ml: 2.118,
-          l: 2.618,
-          xl: 4.236,
-          xxl: 6.854,
-          "3xl": 11.09,
-          "4xl": 17.944
+          xxs: 1 / (1.618 * 1.618), xs: 1 / 1.309, s: 1,
+          sm: large ? 1.309 : 1, m: 1.618, ml: 1.618 * 1.309,
+          l: 1.618 ** 2, xl: large ? 1.618 ** 3 : 1.618 ** 2,
+          xxl: large ? 1.618 ** 4 : 1.618 ** 2,
+          "3xl": large ? 1.618 ** 5 : 1,
+          "4xl": large ? 1.618 ** 6 : 1
         };
-        const size = (this.content && this.content.fontsize) || "s";
-        return `${sizes[size] || sizes.s}rem`;
+        const base = this.editorWidth >= 600 ? this.siteSizes.tablet : this.siteSizes.mobile;
+        return `${base * (sizes[this.selectedFontSize] || 1)}px`;
       }
     },
 
     methods: {
+      async loadSiteSizes() {
+        try {
+          const response = await this.$api.get('pure-text-preview-settings');
+          const data = response?.data || response || {};
+          const mobile = Number(data.mobile) || 16;
+          const tablet = Number(data.tablet) || mobile;
+          this.siteSizes = { mobile, tablet, desktop: Number(data.desktop) || tablet };
+        } catch (error) {
+          console.warn('Pure Text: Could not load site typography settings.', error);
+        }
+      },
       cleanFontFamily(value) {
         return String(value || "").trim().replace(/[;{}<>]/g, "");
       },

@@ -283,6 +283,21 @@ Kirby::plugin('kirbypure/blocks', [
     'api' => [
         'routes' => [
             [
+                'pattern' => 'pure-text-preview-settings',
+                'method' => 'GET',
+                'action' => function () {
+                    $site = $this->kirby()->site();
+                    $mobile = (float)$site->fontSizePrimary()->value();
+                    $mobile = $mobile > 0 ? $mobile : 16;
+                    $tablet = (float)$site->fontSizeTablet()->value();
+                    $tablet = $tablet > 0 ? $tablet : $mobile;
+                    $desktop = (float)$site->fontSizeDesktop()->value();
+                    $desktop = $desktop > 0 ? $desktop : $tablet;
+                    return ['mobile' => $mobile, 'tablet' => $tablet, 'desktop' => $desktop];
+                },
+            ],
+
+            [
                 'pattern' => 'image-preview',
                 'method'  => 'GET',
 
