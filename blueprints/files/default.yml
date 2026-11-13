@@ -1,0 +1,12 @@
+title: File
+
+fields:
+  alt:
+    label:
+      en: Alternative text
+      de: Alternativtext
+    type: text
+    translate: true
+    help:
+      en: Describe meaningful image content. Leave empty for decorative images.
+      de: Beschreibe relevante Bildinhalte. Bei rein dekorativen Bildern leer lassen.

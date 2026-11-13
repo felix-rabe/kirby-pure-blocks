@@ -10,6 +10,10 @@ Kirby::plugin('kirbypure/blocks', [
         'pages/pure-subpage' =>
             __DIR__ . '/blueprints/pages/pure-subpage.yml',
 
+        // File blueprints
+        'files/default' =>
+            __DIR__ . '/blueprints/files/default.yml',
+
         // Blocks
 
         'blocks/pure-image' =>

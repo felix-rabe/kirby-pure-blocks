@@ -10,8 +10,6 @@ fields:
     multiple: false
     image:
       back: black
-    uploads:
-      template: blocks/image
 
   crop:
     label: field.blocks.image.crop
